@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('./../db')
+const db = require('../database/databaseConnection')
 
 /* GET users listing. */
 router.get('/test', function (req, res, next) {
