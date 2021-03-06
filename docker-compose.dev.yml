@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  api:
+    image: node:15.11.0
+    volumes:
+      - ./api:/api
+    command: bash -c "cd /api && npm i && npm run start"
+    ports:
+      - '3000:3000'
