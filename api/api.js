@@ -14,9 +14,12 @@ api.use(express.json())
 api.use(express.urlencoded({ extended: false }))
 api.use(cookieParser())
 
-api.use('/', indexRouter)
-api.use('/users', usersRouter)
-api.use('/patients', patientsRouter.patientsRoutes());
+const version = process.env.API_VERSION
+const prefix = '/api/v'.concat(version.toString())
+
+api.use(prefix.concat('/'), indexRouter)
+api.use(prefix.concat('/users'), usersRouter)
+api.use(prefix.concat('/patients'), patientsRouter.patientsRoutes());
 
 // catch 404 and forward to error handler
 api.use(function (req, res, next) {

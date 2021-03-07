@@ -17,6 +17,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_HOST: postgres
+      API_VERSION: 1
     volumes:
       - ./api:/api
     command: bash -c "cd /api && npm i && npm run start-dev"
