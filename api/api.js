@@ -19,7 +19,7 @@ const prefix = '/api/v'.concat(version.toString())
 
 api.use(prefix.concat('/'), indexRouter)
 api.use(prefix.concat('/users'), usersRouter)
-api.use(prefix.concat('/patients'), patientsRouter.patientsRoutes());
+api.use(prefix.concat('/patients'), patientsRouter.patientsRoutes())
 
 // catch 404 and forward to error handler
 api.use(function (req, res, next) {

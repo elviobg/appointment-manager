@@ -13,10 +13,11 @@ services:
   api:
     image: node:15.11.0
     environment:
-      DB_SCHEMA: postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: postgres
+      DB_SCHEMA: 'postgres'
+      DB_USER: 'postgres'
+      DB_PASSWORD: 'postgres'
+      DB_HOST: 'postgres'
+      DB_PORT: 5432
       API_VERSION: 1
     volumes:
       - ./api:/api
