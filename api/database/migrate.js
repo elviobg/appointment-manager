@@ -1,2 +1,2 @@
 const db = require('../database/databaseConnection')
-db.sequelize.sync()
+db.dbConnection.sync()

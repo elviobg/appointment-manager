@@ -2,7 +2,7 @@
 
 const Sequelize = require('sequelize')
 
-const sequelize = new Sequelize(process.env.DB_SCHEMA || 'postgres',
+const dbConnection = new Sequelize(process.env.DB_SCHEMA || 'postgres',
   process.env.DB_USER || 'postgres',
   process.env.DB_PASSWORD || '',
   {
@@ -17,8 +17,8 @@ const sequelize = new Sequelize(process.env.DB_SCHEMA || 'postgres',
 const db = {}
 
 db.Sequelize = Sequelize
-db.sequelize = sequelize
+db.dbConnection = dbConnection
 
-db.patients = require('../models/patient.js')(sequelize, Sequelize)
+db.patients = require('../models/patient.js')(dbConnection, Sequelize)
 
 module.exports = db
