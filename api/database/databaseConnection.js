@@ -10,14 +10,5 @@ const sequelize = new Sequelize(process.env.DB_SCHEMA || 'postgres',
       ssl: process.env.DB_SSL === 'true'
     }
   })
-
-const Patient = sequelize.define('Patient', {
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }
-})
-module.exports = {
-  sequelize: sequelize,
-  Patient: Patient
-}
+  
+module.exports = {sequelize: sequelize}

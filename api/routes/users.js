@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../database/databaseConnection')
+
 
 /* GET users listing. */
 router.get('/test', function (req, res, next) {
@@ -8,25 +8,11 @@ router.get('/test', function (req, res, next) {
 })
 
 router.post('/', function (req, res, next) {
-  db.Patient.create({
-    name: 'Batatinha'
-  })
-    .then(patients => {
-      res.status(200).send(JSON.stringify(patients))
-    })
-    .catch(err => {
-      res.status(500).send(JSON.stringify(err))
-    })
+  res.send('respond with a resource')
 })
 
 router.get('/', function (req, res, next) {
-  db.Patient.findAll()
-    .then(patients => {
-      res.status(200).send(JSON.stringify(patients))
-    })
-    .catch(err => {
-      res.status(500).send(JSON.stringify(err))
-    })
+  res.send('respond with a resource')
 })
 
 module.exports = router

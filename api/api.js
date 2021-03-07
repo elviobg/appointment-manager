@@ -3,10 +3,11 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 
+const api = express()
+
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
-
-const api = express()
+const patientsRouter = require('./routes/patients')
 
 api.use(logger('dev'))
 api.use(express.json())
@@ -15,6 +16,7 @@ api.use(cookieParser())
 
 api.use('/', indexRouter)
 api.use('/users', usersRouter)
+api.use('/patients', patientsRouter.patientsRoutes());
 
 // catch 404 and forward to error handler
 api.use(function (req, res, next) {
