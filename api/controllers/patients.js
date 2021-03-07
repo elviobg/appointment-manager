@@ -1,8 +1,11 @@
-const Patient = require('../models/patient')
+const db = require('../database/databaseConnection')
 
 module.exports.insert = function (req, res) {
-  Patient.create({
-    name: 'Batatinha'
+  db.patients.create({
+    name: 'Batatinha da Silva',
+    phone: '99999999',
+    height: 1.72,
+    width: 75
   })
     .then(patients => {
       res.status(200).send(JSON.stringify(patients))
@@ -13,7 +16,7 @@ module.exports.insert = function (req, res) {
 }
 
 module.exports.getAll = function (req, res) {
-  Patient.findAll()
+  db.patients.findAll()
     .then(patients => {
       res.status(200).send(JSON.stringify(patients))
     })

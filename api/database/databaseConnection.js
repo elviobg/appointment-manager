@@ -1,10 +1,12 @@
+'use strict'
+
 const Sequelize = require('sequelize')
 
 const sequelize = new Sequelize(process.env.DB_SCHEMA || 'postgres',
   process.env.DB_USER || 'postgres',
   process.env.DB_PASSWORD || '',
   {
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || 'postgres',
     port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     dialectOptions: {
@@ -12,4 +14,11 @@ const sequelize = new Sequelize(process.env.DB_SCHEMA || 'postgres',
     }
   })
 
-module.exports = { sequelize: sequelize }
+const db = {}
+
+db.Sequelize = Sequelize
+db.sequelize = sequelize
+
+db.patients = require('../models/patient.js')(sequelize, Sequelize)
+
+module.exports = db
