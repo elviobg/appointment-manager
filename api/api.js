@@ -2,21 +2,18 @@ const createError = require('http-errors')
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
-
 const api = express()
-
-const indexRouter = require('./routes/index')
-const usersRouter = require('./routes/users')
-const patientsRouter = require('./routes/patients')
 
 api.use(logger('dev'))
 api.use(express.json())
-api.use(express.urlencoded({ extended: false }))
+api.use(express.urlencoded({ extended: true }))
 api.use(cookieParser())
 
 const version = process.env.API_VERSION
 const prefix = '/api/v'.concat(version.toString())
-
+const indexRouter = require('./routes/index')
+const usersRouter = require('./routes/users')
+const patientsRouter = require('./routes/patients')
 api.use(prefix.concat('/'), indexRouter)
 api.use(prefix.concat('/users'), usersRouter)
 api.use(prefix.concat('/patients'), patientsRouter.patientsRoutes())

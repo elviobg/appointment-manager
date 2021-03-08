@@ -1,2 +1,2 @@
 const db = require('../database/databaseConnection')
-db.dbConnection.sync()
+db.dbConnection.sync({ force: true })
