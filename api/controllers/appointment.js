@@ -65,7 +65,7 @@ module.exports.insert = function (req, res) {
     const observation = req.body.observation
   
     db.appointments.update({
-        patient_id: patient_id,
+        patientUuid: patient_id,
         date: date,
         observation: observation,
     },
