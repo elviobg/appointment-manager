@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       allowNull: false
     },
-    patient_id: {
+    patientUuid: {
       type: DataTypes.UUID,
       allowNull: false
     },

@@ -14,9 +14,12 @@ const prefix = '/api/v'.concat(version.toString())
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const patientsRouter = require('./routes/patients')
+const appointmentsRouter = require('./routes/appointment')
+
 api.use(prefix.concat('/'), indexRouter)
 api.use(prefix.concat('/users'), usersRouter)
 api.use(prefix.concat('/patients'), patientsRouter.patientsRoutes())
+api.use(prefix.concat('/appointments'), appointmentsRouter.appointmentsRoutes())
 
 // catch 404 and forward to error handler
 api.use(function (req, res, next) {
