@@ -20,5 +20,9 @@ db.Sequelize = Sequelize
 db.dbConnection = dbConnection
 
 db.patients = require('../models/patient.js')(dbConnection, Sequelize)
+db.appointments = require('../models/appointment.js')(dbConnection, Sequelize)
+
+db.appointments.belongsTo(db.patients)
+db.patients.hasMany(db.appointments)
 
 module.exports = db
