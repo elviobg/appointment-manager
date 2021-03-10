@@ -11,13 +11,13 @@ module.exports.verifyJWT = function (req, res, next) {
       return res.status(401).send({ auth: false, message: 'Token invalid' })
     }
     req.userId = decoded.id
-    console.log('User uuid: ' + decoded.id)
     next()
   })
 }
 
 module.exports.generateJWT = function (id) {
+  const ONE_HOUR_IN_MINUTES = 3600
   const jwt = require('jsonwebtoken')
-  const token = jwt.sign({ id }, process.env.SECRET, { expiresIn: 3600 })
+  const token = jwt.sign({ id }, process.env.SECRET, { expiresIn: ONE_HOUR_IN_MINUTES })
   return token
 }
