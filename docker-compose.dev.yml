@@ -19,6 +19,7 @@ services:
       DB_HOST: 'postgres'
       DB_PORT: 5432
       API_VERSION: 1
+      SECRET: 'batatinha'
     volumes:
       - ./api:/api
     command: bash -c "cd /api && npm i && npm run start-dev"
