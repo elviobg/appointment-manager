@@ -1,17 +1,17 @@
-const express = require('express')
-const router = express.Router()
+function usersRoutes () {
+  const express = require('express')
+  const router = express.Router()
+  const usersController = require('../controllers/users')
 
-/* GET users listing. */
-router.get('/test', function (req, res, next) {
-  res.send('respond with a resource')
-})
+  router.get('/ping', function (req, res) {
+    res.send('pong')
+  })
+  router.get('/', usersController.getAll)
+  router.post('/', usersController.insert)
+  router.patch('/:id', usersController.update)
+  router.delete('/:id', usersController.remove)
 
-router.post('/', function (req, res, next) {
-  res.send('respond with a resource')
-})
+  return router
+}
 
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource')
-})
-
-module.exports = router
+module.exports.usersRoutes = usersRoutes

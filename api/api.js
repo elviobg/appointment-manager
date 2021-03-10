@@ -17,7 +17,7 @@ const patientsRouter = require('./routes/patients')
 const appointmentsRouter = require('./routes/appointment')
 
 api.use(prefix.concat('/'), indexRouter)
-api.use(prefix.concat('/users'), usersRouter)
+api.use(prefix.concat('/users'), usersRouter.usersRoutes())
 api.use(prefix.concat('/patients'), patientsRouter.patientsRoutes())
 api.use(prefix.concat('/appointments'), appointmentsRouter.appointmentsRoutes())
 
