@@ -23,7 +23,7 @@ db.patients = require('../models/patient.js')(dbConnection, Sequelize)
 db.appointments = require('../models/appointment.js')(dbConnection, Sequelize)
 db.users = require('../models/user.js')(dbConnection, Sequelize)
 
-db.patients.hasMany(db.appointments, { onDelete: 'CASCADE', hooks: true})
+db.patients.hasMany(db.appointments, { onDelete: 'CASCADE', hooks: true })
 db.appointments.belongsTo(db.patients)
 
 module.exports = db
