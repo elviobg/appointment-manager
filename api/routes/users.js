@@ -9,7 +9,7 @@ function usersRoutes () {
     res.send('pong')
   })
   router.get('/', JWT.verifyJWT, usersController.getAll)
-  router.post('/', JWT.verifyJWT, usersController.insert)
+  router.post('/', usersController.insert)
   router.patch('/:id', JWT.verifyJWT, usersController.update)
   router.delete('/:id', JWT.verifyJWT, usersController.remove)
   router.post('/login', authController.login)
