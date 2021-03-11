@@ -3,6 +3,7 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const api = express()
+require('dotenv').config()
 
 api.use(logger('dev'))
 api.use(express.json())

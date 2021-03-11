@@ -2,24 +2,12 @@ version: "3.7"
 services:
   postgres:
     image: postgres:13.2
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: appointment
     ports: 
       - '5432:5432'
     volumes:
       - appointment-db:/var/lib/postgresql/data
   api:
     image: node:15.11.0
-    environment:
-      DB_SCHEMA: 'postgres'
-      DB_USER: 'postgres'
-      DB_PASSWORD: 'postgres'
-      DB_HOST: 'postgres'
-      DB_PORT: 5432
-      API_VERSION: 1
-      SECRET: 'batatinha'
     volumes:
       - ./api:/api
     command: bash -c "cd /api && npm i && npm run start-dev"
