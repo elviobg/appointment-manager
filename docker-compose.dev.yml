@@ -17,11 +17,20 @@ services:
     depends_on:
       - postgres
     restart: always
+  web:
+    image: node:15.11.0
+    volumes:
+      - ./web:/web
+    command: bash -c "cd /web && npm i && npm start"
+    ports:
+      - '8000:3000'
+    depends_on:
+      - api
   migrate:
     image: node:15.11.0
     volumes:
       - ./api:/api
-    command: bash -c "cd /api && npm i && npm run test:run"
+    command: bash -c "cd /api && npm i && npm run migrate"
     ports:
       - '3000:3000'
     depends_on:
