@@ -12,7 +12,7 @@ function usersRoutes () {
   router.post('/', JWT.verifyJWT, usersController.insert)
   router.patch('/:id', JWT.verifyJWT, usersController.update)
   router.delete('/:id', JWT.verifyJWT, usersController.remove)
-  router.post('/login', JWT.verifyJWT, authController.login)
+  router.post('/login', authController.login)
   router.post('/logout', JWT.verifyJWT, authController.logout)
 
   return router
