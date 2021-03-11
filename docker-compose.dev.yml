@@ -6,11 +6,22 @@ services:
       - '5432:5432'
     volumes:
       - appointment-db:/var/lib/postgresql/data
+    restart: always
   api:
     image: node:15.11.0
     volumes:
       - ./api:/api
     command: bash -c "cd /api && npm i && npm run start-dev"
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    restart: always
+  migrate:
+    image: node:15.11.0
+    volumes:
+      - ./api:/api
+    command: bash -c "cd /api && npm i && npm run test:run"
     ports:
       - '3000:3000'
     depends_on:
