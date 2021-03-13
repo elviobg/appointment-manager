@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
-import Register from './views/register'
+import Register from './views/register/register'
 
 import { isAuthenticated } from './services/auth'
 
