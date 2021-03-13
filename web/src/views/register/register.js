@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import PropTypes from 'prop-types'
 import styles from './register.style'
-import api from './../services/api'
+import api from '../../services/api'
 import { withRouter } from 'react-router-dom'
 
 class SignUp extends Component {
