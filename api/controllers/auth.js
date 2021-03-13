@@ -10,7 +10,7 @@ module.exports.login = async function (req, res) {
       if (!user) {
         return res.status(404).send({ auth: false, message: 'User not found' })
       }
-      if (await bcrypt.compare(password, user.password)) {        
+      if (await bcrypt.compare(password, user.password)) {
         const token = JWT.generateJWT(user.email)
         res.status(200).send({ auth: true, token: token })
       } else {
