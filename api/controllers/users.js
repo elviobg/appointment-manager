@@ -12,13 +12,16 @@ module.exports.getAll = function (req, res) {
 module.exports.insert = function (req, res) {
   const db = require('../database/databaseConnection')
 
-  const name = req.body.name
-  const login = req.body.login
+  console.log(req.body)
   const password = req.body.password
+  const email = req.body.email
+  const firstname = req.body.firstname
+  const lastname = req.body.lastname
 
   db.users.create({
-    name: name,
-    login: login,
+    firstname: firstname,
+    lastname: lastname,
+    email: email,
     password: password
   })
     .then(users => {
@@ -33,10 +36,12 @@ module.exports.update = function (req, res) {
   const db = require('../database/databaseConnection')
 
   const id = req.params.id
-  const name = req.body.name
+  const firstname = req.body.firstname
+  const lastname = req.body.lastname
 
   db.users.update({
-    name: name
+    firstname: firstname,
+    lastname: lastname
   },
   { where: { uuid: id } })
     .then(users => {
