@@ -12,34 +12,29 @@ import Container from '@material-ui/core/Container'
 import PropTypes from 'prop-types'
 import styles from './register.style'
 import api from './../services/api'
+import { withRouter } from 'react-router-dom'
 
 class SignUp extends Component {
   state = {
-    username: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
     error: ''
   }
-  // onChange={e => this.setState({ password: e.target.value })}
 
-  handleSubmit = async e => {
-    // e.preventDefault()
-    // const { username, email, password } = this.state
-    const name = 'chapatim'
-    const login = 'cha@cha'
-    const password = 'cha'
+  handleSubmit = async event => {
+    event.preventDefault()
+    const { history } = this.props
+    const { firstname, lastname, email, password } = this.state
 
-    if (!name || !login || !password) {
+    if (!firstname || !lastname || !email || !password) {
       this.setState({ error: 'Preencha todos os dados para se cadastrar.' })
-      console.log('erro')
     } else {
       try {
-        console.log('salvando...')
-        await api.post('/users', { name, login, password })
-        this.props.history.push('/')
+        await api.post('/users', { firstname, lastname, email, password })
+        history.push('/home')
       } catch (err) {
-        console.log('erro 2')
-        console.log(err)
         this.setState({ error: 'Ocorreu um erro ao registrar sua conta.' })
       }
     }
@@ -63,13 +58,14 @@ class SignUp extends Component {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="fname"
-                    name="firstName"
                     variant="outlined"
                     required
                     fullWidth
                     id="firstName"
+                    name="firstName"
                     label="First Name"
                     autoFocus
+                    onChange={e => this.setState({ firstname: e.target.value })}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -81,6 +77,7 @@ class SignUp extends Component {
                     label="Last Name"
                     name="lastName"
                     autoComplete="lname"
+                    onChange={e => this.setState({ lastname: e.target.value })}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -92,6 +89,7 @@ class SignUp extends Component {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    onChange={e => this.setState({ email: e.target.value })}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -99,15 +97,14 @@ class SignUp extends Component {
                     variant="outlined"
                     required
                     fullWidth
-                    name="password"
                     label="Password"
                     type="password"
                     id="password"
-                    autoComplete="current-password"
+                    onChange={e => this.setState({ password: e.target.value })}
                   />
                 </Grid>
               </Grid>
-              <Button onClick={() => this.handleSubmit()}
+              <Button onClick={this.handleSubmit.bind(this)}
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -118,7 +115,7 @@ class SignUp extends Component {
               </Button>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link to='/' href="#" variant="body2" >
                     Already have an account? Sign in
                   </Link>
                 </Grid>
@@ -134,4 +131,4 @@ SignUp.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(SignUp)
+export default withRouter(withStyles(styles)(SignUp))
