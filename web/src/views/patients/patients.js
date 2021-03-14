@@ -25,7 +25,8 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import ToogleMenuList from './../components/ToggleMenuList'
-import { NewPatientContainer } from './newPatient'
+import { FormContainer } from './../components/FormContainer'
+import { PatientForm } from './newPatientForm'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -169,18 +170,18 @@ render () {
         </div>
         <Divider />
         <List>
-        <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Customers" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Customers" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Reports" />
+          </ListItem>
         </List>
         <Divider />
       </Drawer>
@@ -189,9 +190,8 @@ render () {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={1}>
             <Grid item xs={3}>
-                <NewPatientContainer triggerText={this.triggerText} onSubmit={this.createNewPatient} />
+                <FormContainer triggerText={this.triggerText} form={<PatientForm onSubmit={this.createNewPatient} />} />
             </Grid>
-            {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 { mountDatagrid(this.state.allPatients) }
