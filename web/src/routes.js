@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import Register from './views/register/register'
 import Login from './views/login/login'
+import Patients from './views/patients/patients'
 
 import { isAuthenticated } from './services/auth'
 
@@ -21,7 +22,7 @@ const Routes = () => (
     <Switch>
       <Route exact path="/" component={ Login } />
       <Route path="/register" component={ Register } />
-      <PrivateRoute path="/home" component={() => <h1>App</h1>} />
+      <PrivateRoute path="/home" component={ Patients } />
       <Route path="*" component={() => <h1>Page not found</h1>} />
     </Switch>
   </BrowserRouter>
