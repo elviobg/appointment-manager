@@ -1,4 +1,5 @@
 import React from 'react'
+
 const Trigger = ({ triggerText, buttonRef, showModal }) => {
   return (
     <button
