@@ -31,33 +31,10 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import { Button } from '@material-ui/core'
+import ToogleMenuList from './../../components/toggle'
+import { NewPatientContainer } from './newPatient'
 
 const drawerWidth = 240
-
-const columnsBKP = [
-  { field: 'id', headerName: 'ID' },
-  { field: 'firstName', headerName: 'First name' },
-  { field: 'lastName', headerName: 'Last name' },
-  { field: 'age', headerName: 'Age', type: 'number' },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    sortable: false,
-    valueGetter: (params) => `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''}`
-  }
-]
-
-const rowsBKP = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: null, firstName: 'Harvey', age: 65 }
-]
 
 function mountDatagrid (rows) {
   return (
@@ -97,28 +74,57 @@ state = {
   allPatients: null
 }
 
+triggerText = 'Create Pacient'
+
 handleDrawerOpen = () => {
   this.state.open = true
+  console.log('open', this.state.open)
 }
 
 handleDrawerClose = () => {
   this.state.open = false
+  console.log('close', this.state.open)
+}
+
+handleCreateNewPatient = (event) => {
+  console.log('criando novo paciente')
 }
 
 componentDidMount () {
   this.getPatients()
 }
 
+createNewPatient = async (event) => {
+  event.preventDefault(event)
+  const name = event.target.name.value
+  const phone = event.target.phone.value
+  const birthday = event.target.birthday.value
+  const gender = event.target.gender.value
+  const height = event.target.height.value
+  const weight = event.target.weight.value
+  this.insertNewPatient(name, phone, birthday, gender, height, weight)
+}
+
+async insertNewPatient (name, phone, birthday, gender, height, weight) {
+  try {
+    await api.post('/patients', { name, phone, birthday, gender, height, weight })
+      .then((response) => {
+        console.log(response)
+        this.getPatients()
+      })
+  } catch (err) {
+    this.setState({ error: 'Houve um problema ao criar novo usuário' })
+  }
+}
+
 async getPatients () {
   try {
     await api.get('/patients')
       .then((response) => {
-        console.log(response.data)
         this.setState({ allPatients: response.data })
         this.setState({ isLoading: false })
       })
   } catch (err) {
-    console.log(err)
     this.setState({ error: 'Houve um problema com o login, e-mail ou senha inválidos' })
   }
 }
@@ -127,7 +133,7 @@ render () {
   const { classes } = this.props
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
   if (this.state.isLoading) {
-    return (<h1>IsLoading</h1>)
+    return (<h1>Is Loading... please wait...</h1>)
   }
 
   return (
@@ -139,30 +145,30 @@ render () {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={this.handleDrawerOpen()}
+            onClick={this.handleDrawerOpen.bind(this)}
             className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
           >
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            ProntoMed
           </Typography>
           <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
+            <Badge color="secondary">
+              <ToogleMenuList />
             </Badge>
           </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
         variant="permanent"
-        open={this.state.open}
+        open={ this.state.open }
         classes={{
           paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose)
         }}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton onClick={this.handleDrawerClose()}>
+          <IconButton onClick={this.handleDrawerClose.bind(this)}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
@@ -174,10 +180,8 @@ render () {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
-                <Button>
-                      New
-                </Button>
+            <Grid item xs={3}>
+                <NewPatientContainer triggerText={this.triggerText} onSubmit={this.createNewPatient} />
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12}>
