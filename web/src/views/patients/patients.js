@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import clsx from 'clsx'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
-import Box from '@material-ui/core/Box'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
@@ -14,27 +13,24 @@ import Badge from '@material-ui/core/Badge'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import Link from '@material-ui/core/Link'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import NotificationsIcon from '@material-ui/icons/Notifications'
-import { sideBarItems } from './../../components/listItems'
-import Orders from './../../components/Orders'
 import styles from './patients.style'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import api from '../../services/api'
-import { DataGrid } from '@material-ui/data-grid'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { Button } from '@material-ui/core'
-import ToogleMenuList from './../../components/toggle'
+import ToogleMenuList from './../components/ToggleMenuList'
 import { NewPatientContainer } from './newPatient'
-
-const drawerWidth = 240
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import PeopleIcon from '@material-ui/icons/People'
+import AssignmentIcon from '@material-ui/icons/Assignment'
 
 function mountDatagrid (rows) {
   return (
@@ -77,12 +73,12 @@ state = {
 triggerText = 'Create Pacient'
 
 handleDrawerOpen = () => {
-  this.state.open = true
+  this.setState({ open: true })
   console.log('open', this.state.open)
 }
 
 handleDrawerClose = () => {
-  this.state.open = false
+  this.setState({ open: false })
   console.log('close', this.state.open)
 }
 
@@ -125,13 +121,12 @@ async getPatients () {
         this.setState({ isLoading: false })
       })
   } catch (err) {
-    this.setState({ error: 'Houve um problema com o login, e-mail ou senha inválidos' })
+    this.setState({ error: 'Houve um problema ao solicitar os pacientes do servidor' })
   }
 }
 
 render () {
   const { classes } = this.props
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
   if (this.state.isLoading) {
     return (<h1>Is Loading... please wait...</h1>)
   }
@@ -173,7 +168,20 @@ render () {
           </IconButton>
         </div>
         <Divider />
-        <List>{sideBarItems}</List>
+        <List>
+        <ListItem button>
+      <ListItemIcon>
+        <PeopleIcon />
+      </ListItemIcon>
+      <ListItemText primary="Customers" />
+    </ListItem>
+    <ListItem button>
+      <ListItemIcon>
+        <AssignmentIcon />
+      </ListItemIcon>
+      <ListItemText primary="Reports" />
+    </ListItem>
+        </List>
         <Divider />
       </Drawer>
       <main className={classes.content}>
