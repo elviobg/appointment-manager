@@ -14,7 +14,7 @@ import Container from '@material-ui/core/Container'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import styles from './dashboard.style'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import ToogleMenuList from './../ToggleMenuList'
 import ListItem from '@material-ui/core/ListItem'
@@ -78,13 +78,13 @@ render () {
         </div>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button component={Link} to='/patients'>
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Customers" />
           </ListItem>
-          <ListItem button>
+          <ListItem button component={Link} to='/appointments'>
             <ListItemIcon>
               <AssignmentIcon />
             </ListItemIcon>
