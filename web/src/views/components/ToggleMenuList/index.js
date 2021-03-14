@@ -1,4 +1,3 @@
-
 import React from 'react'
 import Button from '@material-ui/core/Button'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
@@ -9,6 +8,8 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import { makeStyles } from '@material-ui/core/styles'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import { logout } from './../../../services/auth'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +24,7 @@ export default function ToogleMenuList () {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
+  const history = useHistory()
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen)
@@ -36,7 +38,8 @@ export default function ToogleMenuList () {
   }
 
   const handleLogout = (event) => {
-    console.log('Logout')
+    logout()
+    history.push('/')
   }
 
   function handleListKeyDown (event) {

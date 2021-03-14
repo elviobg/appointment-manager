@@ -10,9 +10,10 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
 import styles from './register.style'
 import api from '../../services/api'
-import { withRouter } from 'react-router-dom'
+import { isAuthenticated } from '../../services/auth'
 
 class SignUp extends Component {
   state = {
@@ -37,6 +38,12 @@ class SignUp extends Component {
       } catch (err) {
         this.setState({ error: 'Ocorreu um erro ao registrar sua conta.' })
       }
+    }
+  }
+
+  componentDidMount () {
+    if (isAuthenticated()) {
+      this.props.history.push('/home')
     }
   }
 

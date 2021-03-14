@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container'
 import PropTypes from 'prop-types'
 import styles from './login.style'
 import api from '../../services/api'
-import { login } from '../../services/auth'
+import { login, isAuthenticated } from '../../services/auth'
 import { withRouter } from 'react-router-dom'
 
 class SignIn extends Component {
@@ -35,6 +35,12 @@ class SignIn extends Component {
       } catch (err) {
         this.setState({ error: 'Houve um problema com o login, e-mail ou senha inválidos' })
       }
+    }
+  }
+
+  componentDidMount () {
+    if (isAuthenticated()) {
+      this.props.history.push('/home')
     }
   }
 
