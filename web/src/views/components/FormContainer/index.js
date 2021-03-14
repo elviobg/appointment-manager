@@ -30,7 +30,7 @@ export class FormContainer extends Component {
 
   toggleScrollLock = () => {
     document.querySelector('html').classList.toggle('scroll-lock')
-  };
+  }
 
   render () {
     return (
