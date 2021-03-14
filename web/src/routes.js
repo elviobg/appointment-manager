@@ -22,7 +22,8 @@ const Routes = () => (
     <Switch>
       <Route exact path="/" component={ Login } />
       <Route path="/register" component={ Register } />
-      <PrivateRoute path="/home" component={ Patients } />
+      <Redirect from="/home" to="/patients" />
+      <PrivateRoute path="/patients" component={ Patients } />
       <PrivateRoute path="/appointments" component={ Appointments } />
       <Route path="*" component={() => <h1>Page not found</h1>} />
     </Switch>
