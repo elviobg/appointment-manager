@@ -45,7 +45,8 @@ export const AppointmentForm = ({ onSubmit, patients }) => {
             label="date"
             name="date"
             autoComplete="date"
-            type="date"
+            type="datetime-local"
+            defaultValue="2020-01-01T10:30Z"
             autoFocus
           />
         </FormControl>
@@ -76,6 +77,7 @@ export const AppointmentForm = ({ onSubmit, patients }) => {
             name="observation"
             autoFocus
             multiline
+            rows={5}
           />
         </FormControl>
         <Button

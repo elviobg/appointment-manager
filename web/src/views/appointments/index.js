@@ -23,7 +23,16 @@ function mountDatagrid (rows) {
           {rows.map((row) => (
             <TableRow key={row.uuid}>
               <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{row.date}</TableCell>
+              <TableCell>{
+              new Intl.DateTimeFormat('pt-BR', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+              }).format(new Date(row.date))
+              }
+              </TableCell>
               <TableCell align="right">{row.observation}</TableCell>
             </TableRow>
           ))}
