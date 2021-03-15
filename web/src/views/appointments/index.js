@@ -17,6 +17,7 @@ import Dashboard from './../components/Dashboard'
 
 function mountDatagrid (rows) {
   if (!rows) return
+  console.log(rows)
   return (
         <React.Fragment>
           {rows.map((row) => (
@@ -32,33 +33,35 @@ function mountDatagrid (rows) {
 
 class Appointments extends Component {
 state = {
-  isLoading: true,
+  isLoadingPacients: true,
+  isLoadingAppointments: true,
+  allPatients: null,
   allAppointments: null
 }
 
 triggerText = 'Create Appointment'
 
 componentDidMount () {
+  this.getPacients()
   this.getAppointments()
 }
 
 createNewAppointment = async (event) => {
   event.preventDefault(event)
-  const name = event.target.name.value
-  const phone = event.target.phone.value
-  const birthday = event.target.birthday.value
-  const gender = event.target.gender.value
-  const height = event.target.height.value
-  const weight = event.target.weight.value
-  this.insertNewPatient(name, phone, birthday, gender, height, weight)
+  const date = event.target.date.value
+  const patientUuid = event.target.patient.value
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
+  }
+  this.insertNewAppointment(date, patientUuid, observation)
 }
 
-async insertNewAppointment (name, phone, birthday, gender, height, weight) {
+async insertNewAppointment (date, patientUuid, observation) {
   try {
-    await api.post('/appointments', { name, phone, birthday, gender, height, weight })
+    await api.post('/appointments', { date, patient_id: patientUuid, observation })
       .then((response) => {
-        console.log(response)
-        this.getPatients()
+        this.getAppointments()
       })
   } catch (err) {
     this.setState({ error: 'Houve um problema ao criar novo usuário' })
@@ -70,17 +73,33 @@ async getAppointments () {
     await api.get('/appointments')
       .then((response) => {
         this.setState({ allAppointments: response.data })
-        this.setState({ isLoading: false })
-        console.log(response.data)
+        this.setState({ isLoadingAppointments: false })
       })
   } catch (err) {
     this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
   }
 }
 
+async getPacients () {
+  try {
+    await api.get('/patients')
+      .then((response) => {
+        this.setState({ allPatients: response.data })
+        this.setState({ isLoadingPacients: false })
+      })
+  } catch (err) {
+    this.setState({ error: 'Houve um problema ao solicitar os pacientes do servidor' })
+  }
+}
+
+isLoading () {
+  if (this.isLoadingAppointments || this.isLoadingPacients) return true
+  return false
+}
+
 render () {
   const { classes } = this.props
-  if (this.state.isLoading) {
+  if (this.isLoading()) {
     return (<h1>Is Loading... please wait...</h1>)
   }
 
@@ -88,9 +107,8 @@ render () {
       <Dashboard contentBoard={
         <Grid container spacing={1}>
           <Grid item xs={3}>
-              <FormContainer triggerText={this.triggerText} form={<AppointmentForm onSubmit={this.createNewAppointment} />} />
+              <FormContainer triggerText={this.triggerText} form={<AppointmentForm onSubmit={this.createNewAppointment} patients={this.state.allPatients}/>} />
           </Grid>
-          {/* Recent Orders */}
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Table size="small">
