@@ -37,7 +37,7 @@ export const PatientForm = ({ onSubmit }) => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <form onSubmit={onSubmit} className={classes.form} noValidate>
+      <form onSubmit={onSubmit} className={classes.form}>
         <TextField
           variant="outlined"
           margin="normal"
