@@ -77,7 +77,7 @@ export const PatientForm = ({ onSubmit }) => {
           variant="outlined"
           className={classes.formControl}
           >
-          <InputLabel htmlFor="name">Name</InputLabel>
+          <InputLabel required htmlFor="gender">Gender</InputLabel>
           <Select
             native
             required
