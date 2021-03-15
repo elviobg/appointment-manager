@@ -20,7 +20,7 @@ module.exports.insert = function (req, res) {
 
 module.exports.getAll = function (req, res) {
   const db = require('../database/databaseConnection')
-  db.appointments.findAll()
+  db.appointments.findAll({ include: db.patients })
     .then(appointments => {
       res.status(200).send(JSON.stringify(appointments))
     })
@@ -33,7 +33,7 @@ module.exports.getByID = function (req, res) {
   const db = require('../database/databaseConnection')
   const id = req.params.id
 
-  db.appointments.findAll({ where: { uuid: id } })
+  db.appointments.findAll({ where: { uuid: id }, include: db.patients })
     .then(appointments => {
       res.status(200).send(JSON.stringify(appointments))
     })
@@ -47,7 +47,7 @@ module.exports.getByPatientID = function (req, res) {
   const db = require('../database/databaseConnection')
   const patientId = req.params.id
 
-  db.appointments.findAll({ where: { patientUuid: patientId } })
+  db.appointments.findAll({ where: { patientUuid: patientId }, include: db.patients })
     .then(appointments => {
       res.status(200).send(JSON.stringify(appointments))
     })
