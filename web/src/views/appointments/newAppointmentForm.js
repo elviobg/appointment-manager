@@ -6,13 +6,11 @@ import { makeStyles } from '@material-ui/core/styles'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
+import api from './../../services/api'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1)
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2)
   },
   form: {
     width: '100%',
@@ -23,13 +21,42 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export const AppointmentForm = ({ onSubmit, patients }) => {
-  const classes = useStyles()
-  const [gender, setGender] = useState('')
-  const handleChange = (event) => {
-    setGender(event.target.value)
+const createNewAppointment = async (event) => {
+  event.preventDefault(event)
+  const date = event.target.date.value
+  const patientUuid = event.target.patient.value
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
   }
-  console.log(patients)
+
+  try {
+    await api.post('/appointments', { date, patient_id: patientUuid, observation })
+      .then((response) => {
+        console.log(response)
+      })
+  } catch (err) {
+    this.setState({ error: 'Houve um problema ao criar novo usuário' })
+  }
+}
+
+const editAppointment = async (event) => {
+  console.log('edit...')
+}
+
+const defaultValues = {
+  date: Date.now(),
+  patientId: '',
+  observation: ''
+}
+
+const AppointmentForm = ({ onSubmit, patients, buttonLabel }) => {
+  const classes = useStyles()
+  const [patient, setPatient] = useState('')
+  const handleChange = (event) => {
+    setPatient(event.target.value)
+  }
+  console.log(defaultValues)
 
   return (
     <div className={classes.root}>
@@ -46,8 +73,8 @@ export const AppointmentForm = ({ onSubmit, patients }) => {
             name="date"
             autoComplete="date"
             type="datetime-local"
-            defaultValue="2020-01-01T10:30Z"
             autoFocus
+            defaultValue={Date.now}
           />
         </FormControl>
         <FormControl fullWidth variant="outlined" className={classes.formControl}>
@@ -55,7 +82,7 @@ export const AppointmentForm = ({ onSubmit, patients }) => {
           <Select
             native
             required
-            value={gender}
+            value={patient}
             onChange={handleChange}
             inputProps={{
               name: 'patient',
@@ -78,20 +105,33 @@ export const AppointmentForm = ({ onSubmit, patients }) => {
             autoFocus
             multiline
             rows={5}
+            defaultValue={defaultValues.observation}
           />
         </FormControl>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
-          Create
-        </Button>
+        <FormControl fullWidth className={classes.formControl}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+            { buttonLabel }
+            </Button>
+          </FormControl>
       </form>
     </div>
   )
 }
 
-export default AppointmentForm
+export const CreateAppointmentForm = ({ patients }) => {
+  return (
+    <AppointmentForm onSubmit={createNewAppointment} patients={patients} buttonLabel={'Create'}/>
+  )
+}
+
+export const EditAppointmentForm = ({ selectedPacient, patients }) => {
+  return (
+    <AppointmentForm onSubmit={editAppointment} patients={patients} buttonLabel={'Edit'}/>
+  )
+}

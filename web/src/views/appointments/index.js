@@ -12,8 +12,23 @@ import TableRow from '@material-ui/core/TableRow'
 import api from '../../services/api'
 import styles from './appointments.style'
 import { FormContainer } from './../components/FormContainer'
-import { AppointmentForm } from './newAppointmentForm'
+import { CreateAppointmentForm } from './newAppointmentForm'
 import Dashboard from './../components/Dashboard'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
+import EditIcon from '@material-ui/icons/Edit'
+import Button from '@material-ui/core/Button'
+
+async function deleteAppointment (uuid) {
+  console.log('DELETE')
+  console.log(uuid)
+}
+
+async function editAppointment (uuid, date, observation) {
+  console.log('EDIT')
+  console.log(uuid)
+  console.log(date)
+  console.log(observation)
+}
 
 function mountDatagrid (rows) {
   if (!rows) return
@@ -22,18 +37,31 @@ function mountDatagrid (rows) {
         <React.Fragment>
           {rows.map((row) => (
             <TableRow key={row.uuid}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>{
-              new Intl.DateTimeFormat('pt-BR', {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric'
-              }).format(new Date(row.date))
-              }
+              <TableCell onClick={() => editAppointment(row.uuid, row.date, row.observation)}>
+                  {row.patient.name}
               </TableCell>
-              <TableCell align="right">{row.observation}</TableCell>
+              <TableCell onClick={() => editAppointment(row.uuid, row.date, row.observation)}>
+                {
+                new Intl.DateTimeFormat('pt-BR', {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric'
+                }).format(new Date(row.date))
+                }
+              </TableCell>
+              <TableCell onClick={() => editAppointment(row.uuid, row.date, row.observation)} align="right">
+                {row.observation}
+              </TableCell>
+              <TableCell align="right">
+              <Button title="delete">
+                  <EditIcon onClick={() => editAppointment(row.uuid, row.date, row.observation)}/>
+                </Button>
+                <Button title="delete">
+                  <DeleteForeverIcon onClick={() => deleteAppointment(row.uuid)}/>
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </React.Fragment>
@@ -53,28 +81,6 @@ triggerText = 'Create Appointment'
 componentDidMount () {
   this.getPacients()
   this.getAppointments()
-}
-
-createNewAppointment = async (event) => {
-  event.preventDefault(event)
-  const date = event.target.date.value
-  const patientUuid = event.target.patient.value
-  let observation = null
-  if (typeof event.target.observation !== 'undefined') {
-    observation = event.target.observation.value
-  }
-  this.insertNewAppointment(date, patientUuid, observation)
-}
-
-async insertNewAppointment (date, patientUuid, observation) {
-  try {
-    await api.post('/appointments', { date, patient_id: patientUuid, observation })
-      .then((response) => {
-        this.getAppointments()
-      })
-  } catch (err) {
-    this.setState({ error: 'Houve um problema ao criar novo usuário' })
-  }
 }
 
 async getAppointments () {
@@ -116,7 +122,7 @@ render () {
       <Dashboard contentBoard={
         <Grid container spacing={1}>
           <Grid item xs={3}>
-              <FormContainer triggerText={this.triggerText} form={<AppointmentForm onSubmit={this.createNewAppointment} patients={this.state.allPatients}/>} />
+              <FormContainer triggerText={this.triggerText} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
@@ -126,6 +132,7 @@ render () {
                     <TableCell>Patient</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell align="right">Observation</TableCell>
+                    <TableCell/>
                   </TableRow>
                 </TableHead>
                 <TableBody>
