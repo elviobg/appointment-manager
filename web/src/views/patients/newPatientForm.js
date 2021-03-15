@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -26,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
 
 export const PatientForm = ({ onSubmit }) => {
   const classes = useStyles()
+  const [gender, setGender] = useState('')
+  const handleChange = (event) => {
+    setGender(event.target.value)
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -64,17 +72,27 @@ export const PatientForm = ({ onSubmit }) => {
           type="date"
           autoFocus
         />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
+        <FormControl
           fullWidth
-          id="gender"
-          label="gender"
-          name="gender"
-          autoComplete="gender"
-          autoFocus
-        />
+          variant="outlined"
+          className={classes.formControl}
+          >
+          <InputLabel htmlFor="name">Name</InputLabel>
+          <Select
+            native
+            required
+            value={gender}
+            onChange={handleChange}
+            inputProps={{
+              name: 'gender',
+              id: 'gender'
+            }}
+          >
+            <option value={'male'}>male</option>
+            <option value={'female'}>female</option>
+          </Select>
+        </FormControl>
+
         <TextField
           variant="outlined"
           margin="normal"
@@ -102,10 +120,9 @@ export const PatientForm = ({ onSubmit }) => {
           fullWidth
           variant="contained"
           color="primary"
-          type="submit"
           className={classes.submit}
         >
-          Submit
+          Create
         </Button>
       </form>
     </div>
