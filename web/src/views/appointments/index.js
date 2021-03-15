@@ -22,7 +22,7 @@ function mountDatagrid (rows) {
         <React.Fragment>
           {rows.map((row) => (
             <TableRow key={row.uuid}>
-              <TableCell>{row.patientUuid}</TableCell>
+              <TableCell>{row.patient.name}</TableCell>
               <TableCell>{row.date}</TableCell>
               <TableCell align="right">{row.observation}</TableCell>
             </TableRow>
