@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import { makeStyles } from '@material-ui/core/styles'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import { logout } from './../../../services/auth'
+import { logout } from '../../services/auth'
 import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({

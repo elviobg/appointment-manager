@@ -1,9 +1,9 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
-import Register from './views/register/register'
-import Login from './views/login/login'
-import Patients from './views/patients/patients'
-import Appointments from './views/appointments'
+import Register from './pages/register/register'
+import Login from './pages/login/login'
+import Patients from './pages/patients/patients'
+import Appointments from './pages/appointments'
 import { isAuthenticated } from './services/auth'
 
 const PrivateRoute = ({ component: Component, ...rest }) => (

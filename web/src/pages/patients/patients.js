@@ -11,9 +11,9 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { FormContainer } from './../components/FormContainer'
+import { FormContainer } from './../../components/FormContainer'
 import { PatientForm } from './newPatientForm'
-import Dashboard from './../components/Dashboard'
+import Dashboard from './../../components/Dashboard'
 
 function mountTableBody (rows) {
   if (!rows) return
