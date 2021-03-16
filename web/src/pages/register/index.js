@@ -26,6 +26,11 @@ class SignUp extends Component {
     error: ''
   }
 
+  validateEmail (email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+  }
+
   handleSubmit = async event => {
     event.preventDefault()
     const { history } = this.props
@@ -33,6 +38,8 @@ class SignUp extends Component {
 
     if (!firstname || !lastname || !email || !password) {
       this.setState({ error: 'Preencha todos os dados para se cadastrar.' })
+    } else if (!this.validateEmail(email)) {
+      this.setState({ error: 'E-mail inválido.' })
     } else {
       try {
         await api.post('/users', { firstname, lastname, email, password })
@@ -62,7 +69,7 @@ class SignUp extends Component {
               Sign up
             </Typography>
             {this.state.error && <p>{this.state.error}</p>}
-            <form className={classes.form} noValidate>
+            <form className={classes.form} validate>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -98,6 +105,7 @@ class SignUp extends Component {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    type="email"
                     onChange={e => this.setState({ email: e.target.value })}
                   />
                 </Grid>
@@ -124,7 +132,7 @@ class SignUp extends Component {
               </Button>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <Link to='/' href="#" variant="body2" >
+                  <Link to='/' href="/" variant="body2" >
                     Already have an account? Sign in
                   </Link>
                 </Grid>

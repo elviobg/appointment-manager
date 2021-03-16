@@ -59,7 +59,7 @@ class SignIn extends Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} validate>
             <TextField
               variant="outlined"
               margin="normal"
@@ -97,7 +97,7 @@ class SignIn extends Component {
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="#" variant="body2" to='/home'>
+                <Link href="/register" to='/register'>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
