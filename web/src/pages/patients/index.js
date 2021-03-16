@@ -29,13 +29,7 @@ componentDidMount () {
   this.getPatients()
 }
 
-patientRowClickOLKD (patient) {
-  console.log(patient)
-  this.props.history.push('/patients/id='.concat(patient.uuid), patient)
-}
-
 patientRowClick (patient) {
-  console.log(patient)
   this.props.history.push({ pathname: '/patients/id='.concat(patient.uuid) })
 }
 

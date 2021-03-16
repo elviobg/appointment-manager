@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
-import FormControl from '@material-ui/core/FormControl'
 
 import Dashboard from './../../components/Dashboard'
 import styles from './style'
@@ -30,6 +29,17 @@ class PatientDetails extends Component {
           this.setState({ patient: response.data[0] })
           this.setState({ isLoading: false })
           console.log('carregou do db ->', response.data[0])
+        })
+    } catch (err) {
+      this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+    }
+  }
+
+  async deletePatient () {
+    try {
+      await api.delete('/patients/'.concat(this.state.patient.uuid))
+        .then((response) => {
+          this.props.history.push({ pathname: '/patients' })
         })
     } catch (err) {
       this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
@@ -73,6 +83,7 @@ class PatientDetails extends Component {
                   variant="contained"
                   color="secondary"
                   className={classes.button}
+                  onClick={() => this.deletePatient()}
                 >
                   Delete
                 </Button>
