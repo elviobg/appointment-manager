@@ -12,7 +12,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
 import { FormContainer } from '../../components/FormContainer'
-import { PatientForm } from './form'
+import { CreatePatientForm } from './form'
 import Dashboard from '../../components/Dashboard'
 import styles from './style'
 import api from '../../services/api'
@@ -30,30 +30,7 @@ componentDidMount () {
 }
 
 patientRowClick (patient) {
-  this.props.history.push({ pathname: '/patients/id='.concat(patient.uuid) })
-}
-
-createNewPatient = async (event) => {
-  event.preventDefault(event)
-  const name = event.target.name.value
-  const phone = event.target.phone.value
-  const birthday = event.target.birthday.value
-  const gender = event.target.gender.value
-  const height = event.target.height.value
-  const weight = event.target.weight.value
-  this.insertNewPatient(name, phone, birthday, gender, height, weight)
-}
-
-async insertNewPatient (name, phone, birthday, gender, height, weight) {
-  try {
-    await api.post('/patients', { name, phone, birthday, gender, height, weight })
-      .then((response) => {
-        console.log(response)
-        this.getPatients()
-      })
-  } catch (err) {
-    this.setState({ error: 'Houve um problema ao criar novo usuário' })
-  }
+  this.props.history.push({ pathname: '/patients/'.concat(patient.uuid) })
 }
 
 async getPatients () {
@@ -96,7 +73,7 @@ render () {
     <Dashboard contentBoard={
       <Grid container spacing={1}>
         <Grid item xs={3}>
-          <FormContainer triggerButtonText={this.triggerButtonText} form={<PatientForm onSubmit={this.createNewPatient} />} />
+          <FormContainer triggerButtonText={this.triggerButtonText} form={<CreatePatientForm />} />
         </Grid>
         <Grid item xs={12}>
           <Paper className={classes.paper}>

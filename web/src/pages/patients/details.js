@@ -10,6 +10,8 @@ import Button from '@material-ui/core/Button'
 import Dashboard from './../../components/Dashboard'
 import styles from './style'
 import api from './../../services/api'
+import { FormContainer } from '../../components/FormContainer'
+import { EditPatientForm } from './form'
 
 class PatientDetails extends Component {
   state = {
@@ -17,8 +19,10 @@ class PatientDetails extends Component {
     patient: null
   }
 
+  triggerButtonText = 'Edit'
+
   componentDidMount () {
-    this.getPatientByUuid(this.props.match.params.id.split('id=')[1])
+    this.getPatientByUuid(this.props.match.params.id)
   }
 
   async getPatientByUuid (uuid) {
@@ -51,8 +55,6 @@ class PatientDetails extends Component {
       return (<h1>Is Loading... please wait...</h1>)
     }
     const { classes } = this.props
-    console.log(this.state)
-    console.log(this.state.patient)
 
     return (
       <Dashboard contentBoard={
@@ -62,21 +64,14 @@ class PatientDetails extends Component {
               <h1>{this.state.patient.name}</h1>
               <p className={classes.p}>Phone: {this.state.patient.phone}</p>
               <p className={classes.p}>Birthday: {this.state.patient.birthday.split('T')[0]}</p>
+              <p className={classes.p}>Gender: {this.state.patient.gender}</p>
               <p className={classes.p}>Altura: {this.state.patient.height} m</p>
               <p className={classes.p}>Peso: {this.state.patient.weight} kg</p>
             </Paper>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
             <Paper className={classes.paper}>
-                <Button
-                  spacing={3}
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                >
-                  Edit
-                </Button>
+                <FormContainer triggerButtonText={this.triggerButtonText} form={<EditPatientForm patient={this.state.patient} />} />
                 <Button
                   spacing={3}
                   fullWidth

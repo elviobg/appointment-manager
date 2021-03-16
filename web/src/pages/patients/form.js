@@ -8,6 +8,12 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 
+import api from './../../services/api'
+
+const state = {
+  error: null
+}
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -28,12 +34,51 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export const PatientForm = ({ onSubmit }) => {
+const createNewPatient = async (event) => {
+  event.preventDefault(event)
+  const name = event.target.name.value
+  const phone = event.target.phone.value
+  const birthday = event.target.birthday.value
+  const gender = event.target.gender.value
+  const height = event.target.height.value
+  const weight = event.target.weight.value
+  try {
+    await api.post('/patients', { name, phone, birthday, gender, height, weight })
+      .then((response) => {
+        console.log(response)
+      })
+  } catch (err) {
+    this.setState({ error: 'Houve um problema ao criar novo usuário' })
+  }
+}
+
+const updatePatient = async (event) => {
+  event.preventDefault(event)
+  const name = event.target.name.value
+  const phone = event.target.phone.value
+  const birthday = event.target.birthday.value
+  const gender = event.target.gender.value
+  const height = event.target.height.value
+  const weight = event.target.weight.value
+  try {
+    await api.put('/patients/'.concat(uuid), { name, phone, birthday, gender, height, weight })
+      .then((response) => {
+        console.log(response)
+      })
+  } catch (err) {
+    this.setState({ error: 'Houve um problema ao atualizar usuário' })
+  }
+}
+
+let uuid
+
+export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   const classes = useStyles()
-  const [gender, setGender] = useState('')
+  const [gender, setGender] = useState(defaultPacientValues.gender)
   const handleChange = (event) => {
     setGender(event.target.value)
   }
+  console.log(defaultPacientValues)
 
   return (
     <div className={classes.root}>
@@ -49,6 +94,7 @@ export const PatientForm = ({ onSubmit }) => {
           name="name"
           autoComplete="name"
           autoFocus
+          defaultValue={defaultPacientValues.name}
         />
         <TextField
           variant="outlined"
@@ -60,40 +106,46 @@ export const PatientForm = ({ onSubmit }) => {
           name="phone"
           autoComplete="phone"
           autoFocus
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="birthday"
-          label="Birthday"
-          name="birthday"
-          autoComplete="birthday"
-          type="date"
-          autoFocus
+          defaultValue={defaultPacientValues.phone}
         />
         <FormControl
           fullWidth
           variant="outlined"
           className={classes.formControl}
           >
-          <InputLabel required htmlFor="gender">Gender</InputLabel>
-          <Select
-            native
+          <TextField
+            variant="outlined"
+            margin="normal"
             required
-            value={gender}
-            onChange={handleChange}
-            inputProps={{
-              name: 'gender',
-              id: 'gender'
-            }}
-          >
-            <option value={'male'}>male</option>
-            <option value={'female'}>female</option>
-          </Select>
+            id="birthday"
+            label="Birthday"
+            name="birthday"
+            autoComplete="birthday"
+            type="date"
+            autoFocus
+            defaultValue={defaultPacientValues.birthday}
+          />
+          <FormControl
+            variant="outlined"
+            className={classes.formControl}
+            >
+            <InputLabel required htmlFor="gender">Gender</InputLabel>
+            <Select
+              native
+              required
+              value={gender}
+              onChange={handleChange}
+              inputProps={{
+                name: 'gender',
+                id: 'gender'
+              }}
+            >
+              <option value={''}></option>
+              <option value={'male'}>male</option>
+              <option value={'female'}>female</option>
+            </Select>
+          </FormControl>
         </FormControl>
-
         <TextField
           variant="outlined"
           margin="normal"
@@ -104,6 +156,7 @@ export const PatientForm = ({ onSubmit }) => {
           name="height"
           autoComplete="height"
           autoFocus
+          defaultValue={defaultPacientValues.height}
         />
         <TextField
           variant="outlined"
@@ -115,6 +168,7 @@ export const PatientForm = ({ onSubmit }) => {
           name="weight"
           autoComplete="weight"
           autoFocus
+          defaultValue={defaultPacientValues.weight}
         />
         <Button
           type="submit"
@@ -129,4 +183,25 @@ export const PatientForm = ({ onSubmit }) => {
     </div>
   )
 }
-export default PatientForm
+
+export const CreatePatientForm = () => {
+  const defaultPacientValues = {
+    name: '',
+    phone: '',
+    birthday: new Date().toISOString().slice(0, 10),
+    gender: '',
+    height: '',
+    weight: ''
+  }
+  return (
+    <PatientForm onSubmit={createNewPatient} defaultPacientValues={defaultPacientValues}/>
+  )
+}
+
+export const EditPatientForm = ({ patient }) => {
+  patient.birthday = patient.birthday.slice(0, 10)
+  uuid = patient.uuid
+  return (
+    <PatientForm onSubmit={updatePatient} defaultPacientValues={patient}/>
+  )
+}
