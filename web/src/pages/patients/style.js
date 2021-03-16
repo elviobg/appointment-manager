@@ -76,6 +76,14 @@ const patientsStyle = theme => ({
   },
   fixedHeight: {
     height: 240
+  },
+  button: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+  },
+  p: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   }
 })
 
