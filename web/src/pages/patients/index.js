@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -17,24 +17,6 @@ import Dashboard from '../../components/Dashboard'
 import styles from './style'
 import api from '../../services/api'
 
-function mountTableBody (rows) {
-  if (!rows) return
-  return (
-        <React.Fragment>
-          {rows.map((row) => (
-            <TableRow key={row.uuid}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.phone}</TableCell>
-              <TableCell>{row.birthday}</TableCell>
-              <TableCell>{row.gender}</TableCell>
-              <TableCell>{row.height}</TableCell>
-              <TableCell align="right">{row.weight}</TableCell>
-            </TableRow>
-          ))}
-        </React.Fragment>
-  )
-}
-
 class Patients extends Component {
 state = {
   isLoading: true,
@@ -45,6 +27,16 @@ triggerButtonText = 'Create Pacient'
 
 componentDidMount () {
   this.getPatients()
+}
+
+patientRowClickOLKD (patient) {
+  console.log(patient)
+  this.props.history.push('/patients/id='.concat(patient.uuid), patient)
+}
+
+patientRowClick (patient) {
+  console.log(patient)
+  this.props.history.push({ pathname: '/patients/id='.concat(patient.uuid) })
 }
 
 createNewPatient = async (event) => {
@@ -82,6 +74,24 @@ async getPatients () {
   }
 }
 
+mountTableBody (rows) {
+  if (!rows) return
+  return (
+        <React.Fragment>
+          {rows.map((row) => (
+            <TableRow key={row.uuid} onClick={() => this.patientRowClick(row)}>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.phone}</TableCell>
+              <TableCell>{row.birthday}</TableCell>
+              <TableCell>{row.gender}</TableCell>
+              <TableCell>{row.height}</TableCell>
+              <TableCell align="right">{row.weight}</TableCell>
+            </TableRow>
+          ))}
+        </React.Fragment>
+  )
+}
+
 render () {
   const { classes } = this.props
   if (this.state.isLoading) {
@@ -108,7 +118,7 @@ render () {
                 </TableRow>
               </TableHead>
               <TableBody>
-                { mountTableBody(this.state.allPatients) }
+                { this.mountTableBody(this.state.allPatients) }
               </TableBody>
             </Table>
           </Paper>
