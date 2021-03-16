@@ -1,19 +1,21 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import styles from './patients.style'
-import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import api from '../../services/api'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { FormContainer } from './../../components/FormContainer'
-import { PatientForm } from './newPatientForm'
-import Dashboard from './../../components/Dashboard'
+
+import { FormContainer } from '../../components/FormContainer'
+import { PatientForm } from './form'
+import Dashboard from '../../components/Dashboard'
+import styles from './style'
+import api from '../../services/api'
 
 function mountTableBody (rows) {
   if (!rows) return

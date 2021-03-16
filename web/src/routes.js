@@ -1,8 +1,9 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
-import Register from './pages/register/register'
-import Login from './pages/login/login'
-import Patients from './pages/patients/patients'
+
+import Register from './pages/register'
+import Login from './pages/login'
+import Patients from './pages/patients'
 import Appointments from './pages/appointments'
 import { isAuthenticated } from './services/auth'
 

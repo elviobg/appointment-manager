@@ -1,22 +1,24 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import api from '../../services/api'
-import styles from './appointments.style'
-import { FormContainer } from './../../components/FormContainer'
-import { CreateAppointmentForm } from './newAppointmentForm'
-import Dashboard from './../../components/Dashboard'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
+
+import { FormContainer } from './../../components/FormContainer'
+import { CreateAppointmentForm } from './form'
+import Dashboard from './../../components/Dashboard'
+import api from '../../services/api'
+import styles from './style'
 
 class Appointments extends Component {
 state = {
