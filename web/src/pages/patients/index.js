@@ -41,7 +41,7 @@ state = {
   allPatients: null
 }
 
-triggerText = 'Create Pacient'
+triggerButtonText = 'Create Pacient'
 
 componentDidMount () {
   this.getPatients()
@@ -92,7 +92,7 @@ render () {
     <Dashboard contentBoard={
       <Grid container spacing={1}>
         <Grid item xs={3}>
-          <FormContainer triggerText={this.triggerText} form={<PatientForm onSubmit={this.createNewPatient} />} />
+          <FormContainer triggerButtonText={this.triggerButtonText} form={<PatientForm onSubmit={this.createNewPatient} />} />
         </Grid>
         <Grid item xs={12}>
           <Paper className={classes.paper}>

@@ -13,9 +13,10 @@ import TableRow from '@material-ui/core/TableRow'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
+import FormControl from '@material-ui/core/FormControl'
 
 import { FormContainer } from './../../components/FormContainer'
-import { CreateAppointmentForm } from './form'
+import { CreateAppointmentForm, EditAppointmentForm } from './form'
 import Dashboard from './../../components/Dashboard'
 import api from '../../services/api'
 import styles from './style'
@@ -28,7 +29,7 @@ state = {
   allAppointments: null
 }
 
-triggerText = 'Create Appointment'
+triggerButtonText = 'Create Appointment'
 
 componentDidMount () {
   this.getPacients()
@@ -77,7 +78,7 @@ async getPacients () {
   }
 }
 
-mountDatagrid (rows) {
+mountDatagrid (rows, classes) {
   if (!rows) return
   return (
         <React.Fragment>
@@ -101,10 +102,13 @@ mountDatagrid (rows) {
                 {row.observation}
               </TableCell>
               <TableCell align="right">
-              <Button title="delete">
-                  <EditIcon onClick={() => this.editAppointment(row.uuid, row.date, row.observation)}/>
+                <Button>
+                  <FormContainer triggerButtonText={<EditIcon/>} form={<EditAppointmentForm patients={this.state.allPatients}/>} />
                 </Button>
-                <Button title="delete">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  title="delete">
                   <DeleteForeverIcon onClick={() => this.deleteAppointment(row.uuid)}/>
                 </Button>
               </TableCell>
@@ -129,7 +133,7 @@ render () {
       <Dashboard contentBoard={
         <Grid container spacing={1}>
           <Grid item xs={3}>
-              <FormContainer triggerText={this.triggerText} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
+              <FormContainer triggerButtonText={this.triggerButtonText} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
@@ -143,7 +147,7 @@ render () {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  { this.mountDatagrid(this.state.allAppointments) }
+                  { this.mountDatagrid(this.state.allAppointments, classes) }
                 </TableBody>
               </Table>
             </Paper>
