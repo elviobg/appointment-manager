@@ -18,56 +18,6 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
 
-async function deleteAppointment (uuid) {
-  console.log('DELETE')
-  console.log(uuid)
-}
-
-async function editAppointment (uuid, date, observation) {
-  console.log('EDIT')
-  console.log(uuid)
-  console.log(date)
-  console.log(observation)
-}
-
-function mountDatagrid (rows) {
-  if (!rows) return
-  console.log(rows)
-  return (
-        <React.Fragment>
-          {rows.map((row) => (
-            <TableRow key={row.uuid}>
-              <TableCell onClick={() => editAppointment(row.uuid, row.date, row.observation)}>
-                  {row.patient.name}
-              </TableCell>
-              <TableCell onClick={() => editAppointment(row.uuid, row.date, row.observation)}>
-                {
-                new Intl.DateTimeFormat('pt-BR', {
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric'
-                }).format(new Date(row.date))
-                }
-              </TableCell>
-              <TableCell onClick={() => editAppointment(row.uuid, row.date, row.observation)} align="right">
-                {row.observation}
-              </TableCell>
-              <TableCell align="right">
-              <Button title="delete">
-                  <EditIcon onClick={() => editAppointment(row.uuid, row.date, row.observation)}/>
-                </Button>
-                <Button title="delete">
-                  <DeleteForeverIcon onClick={() => deleteAppointment(row.uuid)}/>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </React.Fragment>
-  )
-}
-
 class Appointments extends Component {
 state = {
   isLoadingPacients: true,
@@ -95,6 +45,24 @@ async getAppointments () {
   }
 }
 
+async deleteAppointment (uuid) {
+  try {
+    await api.delete('/appointments/'.concat(uuid))
+      .then((response) => {
+        this.getAppointments()
+      })
+  } catch (err) {
+    this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+  }
+}
+
+async editAppointment (uuid, date, observation) {
+  console.log('EDIT')
+  console.log(uuid)
+  console.log(date)
+  console.log(observation)
+}
+
 async getPacients () {
   try {
     await api.get('/patients')
@@ -105,6 +73,43 @@ async getPacients () {
   } catch (err) {
     this.setState({ error: 'Houve um problema ao solicitar os pacientes do servidor' })
   }
+}
+
+mountDatagrid (rows) {
+  if (!rows) return
+  return (
+        <React.Fragment>
+          {rows.map((row) => (
+            <TableRow key={row.uuid}>
+              <TableCell onClick={() => this.editAppointment(row.uuid, row.date, row.observation)}>
+                  {row.patient.name}
+              </TableCell>
+              <TableCell onClick={() => this.editAppointment(row.uuid, row.date, row.observation)}>
+                {
+                new Intl.DateTimeFormat('pt-BR', {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric'
+                }).format(new Date(row.date))
+                }
+              </TableCell>
+              <TableCell onClick={() => this.editAppointment(row.uuid, row.date, row.observation)} align="right">
+                {row.observation}
+              </TableCell>
+              <TableCell align="right">
+              <Button title="delete">
+                  <EditIcon onClick={() => this.editAppointment(row.uuid, row.date, row.observation)}/>
+                </Button>
+                <Button title="delete">
+                  <DeleteForeverIcon onClick={() => this.deleteAppointment(row.uuid)}/>
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </React.Fragment>
+  )
 }
 
 isLoading () {
@@ -136,7 +141,7 @@ render () {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  { mountDatagrid(this.state.allAppointments) }
+                  { this.mountDatagrid(this.state.allAppointments) }
                 </TableBody>
               </Table>
             </Paper>

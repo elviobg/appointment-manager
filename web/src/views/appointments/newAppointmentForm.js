@@ -56,7 +56,6 @@ const AppointmentForm = ({ onSubmit, patients, buttonLabel }) => {
   const handleChange = (event) => {
     setPatient(event.target.value)
   }
-  console.log(defaultValues)
 
   return (
     <div className={classes.root}>
