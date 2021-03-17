@@ -19,6 +19,7 @@ import { CreateAppointmentForm, EditAppointmentForm } from './form'
 import Dashboard from './../../components/Dashboard'
 import api from '../../services/api'
 import styles from './style'
+import { AppointmentsList } from './list'
 
 class Appointments extends Component {
 state = {
@@ -48,17 +49,6 @@ async getAppointments () {
   }
 }
 
-async deleteAppointment (uuid) {
-  try {
-    await api.delete('/appointments/'.concat(uuid))
-      .then((response) => {
-        this.getAppointments()
-      })
-  } catch (err) {
-    this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
-  }
-}
-
 async getPacients () {
   try {
     await api.get('/patients')
@@ -71,58 +61,9 @@ async getPacients () {
   }
 }
 
-mountDatagrid (rows, classes) {
-  if (!rows) return
-  return (
-        <React.Fragment>
-          {rows.map((row) => (
-            <TableRow key={row.uuid}>
-              <TableCell>{row.patient.name}</TableCell>
-              <TableCell>
-                {
-                new Intl.DateTimeFormat('pt-BR', {
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric'
-                }).format(new Date(row.date))
-                }
-              </TableCell>
-              <TableCell align="right">{row.observation}
-              </TableCell>
-              <TableCell align="right">
-                <Button title="edit">
-                  <FormContainer triggerButtonText={<EditIcon/>} form={<EditAppointmentForm
-                  selectedPacient={{
-                    uuid: row.uuid,
-                    name: row.patient.name,
-                    date: row.date,
-                    observation: row.observation
-                  }}
-                  patients={this.state.allPatients}/>} />
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  title="delete">
-                  <DeleteForeverIcon onClick={() => this.deleteAppointment(row.uuid)}/>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </React.Fragment>
-  )
-}
-
-isLoading () {
-  if (this.isLoadingAppointments || this.isLoadingPacients) return true
-  return false
-}
-
 render () {
   const { classes } = this.props
-  if (this.isLoading()) {
+  if (this.state.isLoadingAppointments || this.state.isLoadingPacients) {
     return (<h1>Is Loading... please wait...</h1>)
   }
 
@@ -132,23 +73,7 @@ render () {
           <Grid item xs={3}>
               <FormContainer triggerButtonText={this.triggerButtonText} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
           </Grid>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Patient</TableCell>
-                    <TableCell>Date</TableCell>
-                    <TableCell align="right">Observation</TableCell>
-                    <TableCell/>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  { this.mountDatagrid(this.state.allAppointments, classes) }
-                </TableBody>
-              </Table>
-            </Paper>
-          </Grid>
+          <AppointmentsList appointments={this.state.allAppointments} />
         </Grid>
       }
       />
