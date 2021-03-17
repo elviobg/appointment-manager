@@ -46,44 +46,25 @@ const editAppointment = async (event) => {
   console.log('edit...')
 }
 
-const defaultValues = {
-  date: Date.now(),
-  patientId: '',
-  observation: ''
-}
-
-const AppointmentForm = ({ onSubmit, patients, buttonLabel }) => {
+const AppointmentForm = ({ onSubmit, patients, buttonLabel, defaultPacientValues }) => {
   const classes = useStyles()
-  const [patient, setPatient] = useState('')
+  const [patientID, setPatientID] = useState('')
   const handleChange = (event) => {
-    setPatient(event.target.value)
+    setPatientID(event.target.value)
   }
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       <form onSubmit={onSubmit} className={classes.form}>
-        <FormControl fullWidth className={classes.formControl}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="date"
-            label="date"
-            name="date"
-            autoComplete="date"
-            type="datetime-local"
-            autoFocus
-            defaultValue={Date.now}
-          />
-        </FormControl>
         <FormControl fullWidth variant="outlined" className={classes.formControl}>
-          <InputLabel htmlFor="name">Patient</InputLabel>
+          <InputLabel id='label-selector-patient' htmlFor="patient">Patient</InputLabel>
           <Select
+            labelId='label-selector-patient'
             native
             required
-            value={patient}
+            value={patientID}
+            defaultValue={{ value: defaultPacientValues.patientUuid }}
             onChange={handleChange}
             inputProps={{
               name: 'patient',
@@ -99,14 +80,29 @@ const AppointmentForm = ({ onSubmit, patients, buttonLabel }) => {
           <TextField
             variant="outlined"
             margin="normal"
+            required
+            fullWidth
+            id="date"
+            label="date"
+            name="date"
+            autoComplete="date"
+            type="datetime-local"
+            autoFocus
+            defaultValue={defaultPacientValues.date}
+          />
+        </FormControl>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            variant="outlined"
+            margin="normal"
             fullWidth
             id="observation"
             label="observation"
             name="observation"
             autoFocus
             multiline
-            rows={5}
-            defaultValue={defaultValues.observation}
+            rows={4}
+            defaultValue={defaultPacientValues.observation}
           />
         </FormControl>
         <FormControl fullWidth className={classes.formControl}>
@@ -126,13 +122,20 @@ const AppointmentForm = ({ onSubmit, patients, buttonLabel }) => {
 }
 
 export const CreateAppointmentForm = ({ patients }) => {
+  const defaultValues = {
+    uuid: '',
+    name: '',
+    date: new Date().toISOString().slice(0, 16),
+    observation: ''
+  }
   return (
-    <AppointmentForm onSubmit={createNewAppointment} patients={patients} buttonLabel={'Create'}/>
+    <AppointmentForm onSubmit={createNewAppointment} patients={patients} buttonLabel={'Create'} defaultPacientValues={defaultValues}/>
   )
 }
 
 export const EditAppointmentForm = ({ selectedPacient, patients }) => {
+  selectedPacient.date = selectedPacient.date.slice(0, 16)
   return (
-    <AppointmentForm onSubmit={editAppointment} patients={patients} buttonLabel={'Edit'}/>
+    <AppointmentForm onSubmit={editAppointment} patients={patients} buttonLabel={'Edit'} defaultPacientValues={selectedPacient}/>
   )
 }

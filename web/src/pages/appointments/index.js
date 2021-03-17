@@ -13,7 +13,6 @@ import TableRow from '@material-ui/core/TableRow'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
-import FormControl from '@material-ui/core/FormControl'
 
 import { FormContainer } from './../../components/FormContainer'
 import { CreateAppointmentForm, EditAppointmentForm } from './form'
@@ -26,7 +25,8 @@ state = {
   isLoadingPacients: true,
   isLoadingAppointments: true,
   allPatients: null,
-  allAppointments: null
+  allAppointments: null,
+  error: null
 }
 
 triggerButtonText = 'Create Appointment'
@@ -59,13 +59,6 @@ async deleteAppointment (uuid) {
   }
 }
 
-async editAppointment (uuid, date, observation) {
-  console.log('EDIT')
-  console.log(uuid)
-  console.log(date)
-  console.log(observation)
-}
-
 async getPacients () {
   try {
     await api.get('/patients')
@@ -84,10 +77,8 @@ mountDatagrid (rows, classes) {
         <React.Fragment>
           {rows.map((row) => (
             <TableRow key={row.uuid}>
-              <TableCell onClick={() => this.editAppointment(row.uuid, row.date, row.observation)}>
-                  {row.patient.name}
-              </TableCell>
-              <TableCell onClick={() => this.editAppointment(row.uuid, row.date, row.observation)}>
+              <TableCell>{row.patient.name}</TableCell>
+              <TableCell>
                 {
                 new Intl.DateTimeFormat('pt-BR', {
                   year: 'numeric',
@@ -98,12 +89,18 @@ mountDatagrid (rows, classes) {
                 }).format(new Date(row.date))
                 }
               </TableCell>
-              <TableCell onClick={() => this.editAppointment(row.uuid, row.date, row.observation)} align="right">
-                {row.observation}
+              <TableCell align="right">{row.observation}
               </TableCell>
               <TableCell align="right">
-                <Button>
-                  <FormContainer triggerButtonText={<EditIcon/>} form={<EditAppointmentForm patients={this.state.allPatients}/>} />
+                <Button title="edit">
+                  <FormContainer triggerButtonText={<EditIcon/>} form={<EditAppointmentForm
+                  selectedPacient={{
+                    uuid: row.uuid,
+                    name: row.patient.name,
+                    date: row.date,
+                    observation: row.observation
+                  }}
+                  patients={this.state.allPatients}/>} />
                 </Button>
                 <Button
                   variant="contained"
