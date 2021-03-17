@@ -12,26 +12,31 @@ import styles from './style'
 import api from './../../services/api'
 import { FormContainer } from '../../components/FormContainer'
 import { EditPatientForm } from './form'
+import { AppointmentsList } from './../appointments/list'
+import { CreateAppointmentToPatientForm } from './../appointments/form'
 
 class PatientDetails extends Component {
   state = {
-    isLoading: true,
-    patient: null
+    isLoadingPatient: true,
+    isLoadingAppointments: true,
+    patient: null,
+    appointments: null
   }
 
   triggerButtonText = 'Edit'
 
   componentDidMount () {
-    this.getPatientByUuid(this.props.match.params.id)
+    this.getPatientByUuid()
+    this.getAppointmentsByPatient()
   }
 
-  async getPatientByUuid (uuid) {
-    console.log(uuid)
+  async getPatientByUuid () {
+    console.log(this.props.match.params.id)
     try {
-      await api.get('/patients/'.concat(uuid))
+      await api.get('/patients/'.concat(this.props.match.params.id))
         .then((response) => {
           this.setState({ patient: response.data[0] })
-          this.setState({ isLoading: false })
+          this.setState({ isLoadingPatient: false })
           console.log('carregou do db ->', response.data[0])
         })
     } catch (err) {
@@ -50,8 +55,21 @@ class PatientDetails extends Component {
     }
   }
 
+  async getAppointmentsByPatient () {
+    try {
+      await api.get('/appointments/patient/'.concat(this.props.match.params.id))
+        .then((response) => {
+          console.log('carregou appointments do db ->', response.data[0])
+          this.setState({ appointments: response.data })
+          this.setState({ isLoadingAppointments: false })
+        })
+    } catch (err) {
+      this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+    }
+  }
+
   render () {
-    if (this.state.isLoading) {
+    if (this.state.isLoadingAppointments || this.state.isLoadingPatient) {
       return (<h1>Is Loading... please wait...</h1>)
     }
     const { classes } = this.props
@@ -84,9 +102,15 @@ class PatientDetails extends Component {
                 </Button>
             </Paper>
           </Grid>
+          <Grid item xs={3}>
+            <FormContainer triggerButtonText={'New Appointment'} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient}/>} />
+          </Grid>
           <Grid item xs={12}>
-          <Paper className={classes.paper}>
-              {/* list of appointments */}
+            <Paper className={classes.paper}>
+              <Grid item xs={12}>
+                <h2>Appointments</h2>
+              </Grid>
+              <AppointmentsList appointments={ this.state.appointments }/>
             </Paper>
           </Grid>
         </Grid>

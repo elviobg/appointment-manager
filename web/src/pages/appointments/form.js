@@ -9,6 +9,11 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
 import api from '../../services/api'
+import { PatientForm } from '../patients/form'
+
+const state = {
+  patientUuid: ''
+}
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -23,15 +28,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const createNewAppointment = async (event) => {
+const createNewAppointment = (event) => {
   event.preventDefault(event)
-  const date = event.target.date.value
-  const patientUuid = event.target.patient.value
   let observation = null
   if (typeof event.target.observation !== 'undefined') {
     observation = event.target.observation.value
   }
+  createAppointment(event.target.patient.value, event.target.date.value, observation)
+}
 
+const createNewAppointmentWithPatient = (event) => {
+  event.preventDefault(event)
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
+  }
+  createAppointment(state.patientUuid, event.target.date.value, observation)
+}
+
+const createAppointment = async (patientUuid, date, observation) => {
+  console.log(patientUuid, date, observation)
   try {
     await api.post('/appointments', { date, patient_id: patientUuid, observation })
       .then((response) => {
@@ -46,7 +62,7 @@ const editAppointment = async (event) => {
   console.log('edit...')
 }
 
-const AppointmentForm = ({ onSubmit, patients, buttonLabel, defaultPacientValues }) => {
+const PatientField = ({ patients, defaultPacientUuid }) => {
   const classes = useStyles()
   const [patientID, setPatientID] = useState('')
   const handleChange = (event) => {
@@ -54,57 +70,79 @@ const AppointmentForm = ({ onSubmit, patients, buttonLabel, defaultPacientValues
   }
 
   return (
+    <FormControl fullWidth variant="outlined" className={classes.formControl}>
+      <InputLabel id='label-selector-patient' htmlFor="patient">Patient</InputLabel>
+      <Select
+        labelId='label-selector-patient'
+        native
+        required
+        value={patientID}
+        defaultValue={{ value: defaultPacientUuid }}
+        onChange={handleChange}
+        inputProps={{
+          name: 'patient',
+          id: 'patient'
+        }}
+      >
+        {(patients || []).map((patient) => {
+          return <option key={patient.uuid} value={patient.uuid}>{patient.name}</option>
+        })}
+      </Select>
+    </FormControl>
+  )
+}
+
+const DateField = ({ defaultDateValue }) => {
+  const classes = useStyles()
+
+  return (
+    <FormControl fullWidth className={classes.formControl}>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        required
+        fullWidth
+        id="date"
+        label="date"
+        name="date"
+        autoComplete="date"
+        type="datetime-local"
+        autoFocus
+        defaultValue={defaultDateValue}
+      />
+    </FormControl>
+  )
+}
+
+const ObservationField = ({ defaultObservationValue }) => {
+  const classes = useStyles()
+
+  return (
+    <FormControl fullWidth className={classes.formControl}>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        fullWidth
+        id="observation"
+        label="observation"
+        name="observation"
+        autoFocus
+        multiline
+        rows={4}
+        defaultValue={defaultObservationValue.observation}
+      />
+    </FormControl>
+  )
+}
+
+const AppointmentForm = ({ onSubmit, fieldsContent, buttonLabel }) => {
+  const classes = useStyles()
+
+  return (
     <div className={classes.root}>
       <CssBaseline />
-      <form onSubmit={onSubmit} className={classes.form}>
-        <FormControl fullWidth variant="outlined" className={classes.formControl}>
-          <InputLabel id='label-selector-patient' htmlFor="patient">Patient</InputLabel>
-          <Select
-            labelId='label-selector-patient'
-            native
-            required
-            value={patientID}
-            defaultValue={{ value: defaultPacientValues.patientUuid }}
-            onChange={handleChange}
-            inputProps={{
-              name: 'patient',
-              id: 'patient'
-            }}
-          >
-            {(patients || []).map((patient) => {
-              return <option key={patient.uuid} value={patient.uuid}>{patient.name}</option>
-            })}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth className={classes.formControl}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="date"
-            label="date"
-            name="date"
-            autoComplete="date"
-            type="datetime-local"
-            autoFocus
-            defaultValue={defaultPacientValues.date}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.formControl}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            id="observation"
-            label="observation"
-            name="observation"
-            autoFocus
-            multiline
-            rows={4}
-            defaultValue={defaultPacientValues.observation}
-          />
-        </FormControl>
+      <form onSubmit={onSubmit} className={classes.form} validate>
+        { fieldsContent }
         <FormControl fullWidth className={classes.formControl}>
             <Button
               type="submit"
@@ -122,20 +160,53 @@ const AppointmentForm = ({ onSubmit, patients, buttonLabel, defaultPacientValues
 }
 
 export const CreateAppointmentForm = ({ patients }) => {
-  const defaultValues = {
-    uuid: '',
-    name: '',
-    date: new Date().toISOString().slice(0, 16),
-    observation: ''
-  }
   return (
-    <AppointmentForm onSubmit={createNewAppointment} patients={patients} buttonLabel={'Create'} defaultPacientValues={defaultValues}/>
+    <AppointmentForm
+      onSubmit={createNewAppointment}
+      fieldsContent={
+        <div>
+          <PatientField patients={patients} defaultPacientUuid={''} />
+          <DateField defaultDateValue={ new Date().toISOString().slice(0, 16) }/>
+          <ObservationField defaultObservationValue={''}/>
+        </div>
+      }
+      buttonLabel={'Create'}
+    />
+  )
+}
+
+export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
+  console.log(preDefinedPatient)
+  console.log(preDefinedPatient.uuid)
+  state.patientUuid = preDefinedPatient.uuid
+  console.log(state.uuid)
+  return (
+    <AppointmentForm
+      onSubmit={createNewAppointmentWithPatient}
+      fieldsContent={
+        <div>
+          <h2>Patient: { preDefinedPatient.name }</h2>
+          <DateField defaultDateValue={ new Date().toISOString().slice(0, 16) }/>
+          <ObservationField defaultObservationValue={''}/>
+        </div>
+      }
+      buttonLabel={'Create'}
+    />
   )
 }
 
 export const EditAppointmentForm = ({ selectedPacient, patients }) => {
   selectedPacient.date = selectedPacient.date.slice(0, 16)
   return (
-    <AppointmentForm onSubmit={editAppointment} patients={patients} buttonLabel={'Edit'} defaultPacientValues={selectedPacient}/>
+    <AppointmentForm
+      onSubmit={editAppointment}
+      fieldsContent={
+        <div>
+          <DateField defaultDateValue={ new Date().toISOString().slice(0, 16) }/>
+          <ObservationField defaultObservationValue={''}/>
+        </div>
+      }
+      buttonLabel={'Create'}
+    />
   )
 }
