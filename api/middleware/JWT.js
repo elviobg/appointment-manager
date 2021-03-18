@@ -18,6 +18,6 @@ module.exports.verifyJWT = function (req, res, next) {
 module.exports.generateJWT = function (id) {
   const ONE_HOUR_IN_MINUTES = 3600
   const jwt = require('jsonwebtoken')
-  const token = jwt.sign({ id }, process.env.SECRET, { expiresIn: ONE_HOUR_IN_MINUTES })
+  const token = jwt.sign({ id }, process.env.SECRET, { expiresIn: ONE_HOUR_IN_MINUTES * 12 })
   return token
 }
