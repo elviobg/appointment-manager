@@ -76,12 +76,12 @@ export const AppointmentsList = ({ appointments, hidePatientColumn }) => {
   ]
 
   return (
-        <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <div style={{ height: 500, width: '100%' }}>
-                <DataGrid disableColumnMenu={true} hideFooterSelectedRowCount={true} getRowId={(row) => row.uuid} rows={appointments} columns={columns} pageSize={10} />
-              </div>
-            </Paper>
-        </Grid>
+    <Grid item xs={12}>
+        <Paper className={classes.paper}>
+          <div style={{ height: 500, width: '100%' }}>
+            <DataGrid disableColumnMenu={true} hideFooterSelectedRowCount={true} getRowId={(row) => row.uuid} rows={appointments} columns={columns} pageSize={10} />
+          </div>
+        </Paper>
+    </Grid>
   )
 }
