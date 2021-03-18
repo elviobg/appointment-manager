@@ -16,7 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    birthday: DataTypes.DATE,
+    birthday: {
+      type: DataTypes.DATE,
+      get () {
+        const moment = require('moment')
+        return moment(this.getDataValue('date')).format('DD/MM/YYYY')
+      }
+    },
     gender: {
       type: DataTypes.ENUM,
       values: ['male', 'female']

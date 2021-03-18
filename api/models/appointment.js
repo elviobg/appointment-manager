@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     date: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      get () {
+        const moment = require('moment')
+        return moment(this.getDataValue('date')).format('DD/MM/YYYY hh:mm')
+      }
     },
     observation: {
       type: DataTypes.STRING,
