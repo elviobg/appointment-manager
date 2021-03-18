@@ -9,7 +9,6 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
 import api from '../../services/api'
-import { PatientForm } from '../patients/form'
 
 const state = {
   patientUuid: ''
@@ -70,7 +69,7 @@ const PatientField = ({ patients, defaultPacientUuid }) => {
   }
 
   return (
-    <FormControl fullWidth variant="outlined" className={classes.formControl}>
+    <FormControl fullWidth variant="outlined" autoComplete className={classes.formControl}>
       <InputLabel id='label-selector-patient' htmlFor="patient">Patient</InputLabel>
       <Select
         labelId='label-selector-patient'
@@ -176,10 +175,7 @@ export const CreateAppointmentForm = ({ patients }) => {
 }
 
 export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
-  console.log(preDefinedPatient)
-  console.log(preDefinedPatient.uuid)
   state.patientUuid = preDefinedPatient.uuid
-  console.log(state.uuid)
   return (
     <AppointmentForm
       onSubmit={createNewAppointmentWithPatient}

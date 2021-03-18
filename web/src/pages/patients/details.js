@@ -110,7 +110,7 @@ class PatientDetails extends Component {
               <Grid item xs={12}>
                 <h2>Appointments</h2>
               </Grid>
-              <AppointmentsList appointments={ this.state.appointments }/>
+              <AppointmentsList appointments={this.state.appointments} hidePatientColumn={true}/>
             </Paper>
           </Grid>
         </Grid>

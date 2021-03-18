@@ -2,23 +2,12 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
-import EditIcon from '@material-ui/icons/Edit'
-import Button from '@material-ui/core/Button'
 
 import { FormContainer } from './../../components/FormContainer'
-import { CreateAppointmentForm, EditAppointmentForm } from './form'
+import { CreateAppointmentForm } from './form'
 import Dashboard from './../../components/Dashboard'
 import api from '../../services/api'
-import styles from './style'
 import { AppointmentsList } from './list'
 
 class Appointments extends Component {
@@ -41,8 +30,11 @@ async getAppointments () {
   try {
     await api.get('/appointments')
       .then((response) => {
+        console.log(response.data)
+        response.data.id = response.data.uuid
         this.setState({ allAppointments: response.data })
         this.setState({ isLoadingAppointments: false })
+        console.log(this.state.allAppointments)
       })
   } catch (err) {
     this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
@@ -62,7 +54,6 @@ async getPacients () {
 }
 
 render () {
-  const { classes } = this.props
   if (this.state.isLoadingAppointments || this.state.isLoadingPacients) {
     return (<h1>Is Loading... please wait...</h1>)
   }
@@ -73,7 +64,7 @@ render () {
           <Grid item xs={3}>
               <FormContainer triggerButtonText={this.triggerButtonText} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
           </Grid>
-          <AppointmentsList appointments={this.state.allAppointments} />
+          <AppointmentsList appointments={this.state.allAppointments} hidePatientColumn={false} />
         </Grid>
       }
       />
@@ -85,4 +76,4 @@ Appointments.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withRouter(withStyles(styles)(Appointments))
+export default withRouter(Appointments)
