@@ -26,7 +26,7 @@ module.exports.insert = function (req, res) {
 
 module.exports.getAll = function (req, res) {
   const db = require('../database/databaseConnection')
-  db.patients.findAll()
+  db.patients.findAll({order: [['name']]})
     .then(patients => {
       res.status(200).send(JSON.stringify(patients))
     })
@@ -39,7 +39,7 @@ module.exports.getByID = function (req, res) {
   const db = require('../database/databaseConnection')
   const id = req.params.id
 
-  db.patients.findAll({ where: { uuid: id } })
+  db.patients.findOne({ where: { uuid: id } })
     .then(patients => {
       res.status(200).send(JSON.stringify(patients))
     })

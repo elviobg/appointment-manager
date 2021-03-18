@@ -35,7 +35,7 @@ class PatientDetails extends Component {
     try {
       await api.get('/patients/'.concat(this.props.match.params.id))
         .then((response) => {
-          this.setState({ patient: response.data[0] })
+          this.setState({ patient: response.data })
           this.setState({ isLoadingPatient: false })
           console.log('carregou do db ->', response.data[0])
         })
