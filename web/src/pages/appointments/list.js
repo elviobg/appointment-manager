@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 
 import api from '../../services/api'
+import MESSAGES from '../../services/messages'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -22,7 +23,7 @@ async function deleteAppointment (uuid) {
   try {
     await api.delete('/appointments/'.concat(uuid))
   } catch (err) {
-    this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
@@ -35,14 +36,14 @@ export const AppointmentsList = ({ appointments, hidePatientColumn }) => {
       field: 'patient',
       hide: hidePatientColumn,
       flex: 3,
-      headerName: 'Patient',
+      headerName: MESSAGES.LABEL.PATIENT,
       valueGetter: (params) => {
         console.log(params.row.patient.name)
         return params.row.patient.name
       }
     },
-    { field: 'date', flex: 2, headerName: 'Date' },
-    { field: 'observation', flex: 4, headerName: 'Observation' },
+    { field: 'date', flex: 2, headerName: MESSAGES.LABEL.DATE },
+    { field: 'observation', flex: 4, headerName: MESSAGES.ERROR.OBSERVATION },
     {
       field: '',
       flex: 1,

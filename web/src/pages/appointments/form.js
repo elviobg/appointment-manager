@@ -9,6 +9,7 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
 import api from '../../services/api'
+import MESSAGES from '../../services/messages'
 
 const state = {
   patientUuid: ''
@@ -53,7 +54,7 @@ const createAppointment = async (patientUuid, date, observation) => {
         console.log(response)
       })
   } catch (err) {
-    this.setState({ error: 'Houve um problema ao criar novo usuário' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
@@ -70,7 +71,7 @@ const PatientField = ({ patients, defaultPacientUuid }) => {
 
   return (
     <FormControl fullWidth variant="outlined" autoComplete className={classes.formControl}>
-      <InputLabel id='label-selector-patient' htmlFor="patient">Patient</InputLabel>
+      <InputLabel id='label-selector-patient' htmlFor="patient">{MESSAGES.LABEL.PATIENT}</InputLabel>
       <Select
         labelId='label-selector-patient'
         native
@@ -102,7 +103,7 @@ const DateField = ({ defaultDateValue }) => {
         required
         fullWidth
         id="date"
-        label="date"
+        label={MESSAGES.LABEL.DATE}
         name="date"
         autoComplete="date"
         type="datetime-local"
@@ -123,7 +124,7 @@ const ObservationField = ({ defaultObservationValue }) => {
         margin="normal"
         fullWidth
         id="observation"
-        label="observation"
+        label={MESSAGES.LABEL.OBSERVATION}
         name="observation"
         autoFocus
         multiline
@@ -169,7 +170,7 @@ export const CreateAppointmentForm = ({ patients }) => {
           <ObservationField defaultObservationValue={''}/>
         </div>
       }
-      buttonLabel={'Create'}
+      buttonLabel={MESSAGES.BUTTONS.CREATE}
     />
   )
 }
@@ -186,7 +187,7 @@ export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
           <ObservationField defaultObservationValue={''}/>
         </div>
       }
-      buttonLabel={'Create'}
+      buttonLabel={MESSAGES.BUTTONS.CREATE}
     />
   )
 }

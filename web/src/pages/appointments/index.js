@@ -8,6 +8,7 @@ import { FormContainer } from './../../components/FormContainer'
 import { CreateAppointmentForm } from './form'
 import Dashboard from './../../components/Dashboard'
 import api from '../../services/api'
+import MESSAGES from '../../services/messages'
 import { AppointmentsList } from './list'
 
 class Appointments extends Component {
@@ -37,7 +38,7 @@ async getAppointments () {
         console.log(this.state.allAppointments)
       })
   } catch (err) {
-    this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
@@ -49,20 +50,20 @@ async getPacients () {
         this.setState({ isLoadingPacients: false })
       })
   } catch (err) {
-    this.setState({ error: 'Houve um problema ao solicitar os pacientes do servidor' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
 render () {
   if (this.state.isLoadingAppointments || this.state.isLoadingPacients) {
-    return (<h1>Is Loading... please wait...</h1>)
+    return (<h1>{MESSAGES.FEEDBACK.LOADING}</h1>)
   }
 
   return (
       <Dashboard contentBoard={
         <Grid container spacing={1}>
           <Grid item xs={3}>
-              <FormContainer triggerButtonText={this.triggerButtonText} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
+              <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
           </Grid>
           <AppointmentsList appointments={this.state.allAppointments} hidePatientColumn={false} />
         </Grid>
