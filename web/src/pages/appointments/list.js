@@ -43,7 +43,7 @@ export const AppointmentsList = ({ appointments, hidePatientColumn }) => {
       }
     },
     { field: 'date', flex: 2, headerName: MESSAGES.LABEL.DATE },
-    { field: 'observation', flex: 4, headerName: MESSAGES.ERROR.OBSERVATION },
+    { field: 'observation', flex: 4, headerName: MESSAGES.LABEL.OBSERVATION },
     {
       field: '',
       flex: 1,
