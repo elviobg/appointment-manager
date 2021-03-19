@@ -24,6 +24,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment'
 
 import styles from './dashboard.style'
 import ToogleMenuList from '../ToggleMenuList'
+import { getUserFullName } from './../../services/auth'
 import MESSAGES from './../../services/messages'
 
 class DashBoard extends Component {
@@ -57,6 +58,9 @@ render () {
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             ProntoMed
+          </Typography>
+          <Typography component="h2" variant="h6" color="inherit" noWrap>
+            {getUserFullName()}
           </Typography>
           <IconButton color="inherit">
             <Badge color="secondary">

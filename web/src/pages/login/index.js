@@ -33,7 +33,7 @@ class SignIn extends Component {
     } else {
       try {
         const response = await api.post('/users/login', { email, password })
-        login(response.data.token)
+        login(response.data.token, response.data.fullname)
         this.props.history.push('/home')
       } catch (err) {
         this.setState({ error: MESSAGES.ERROR.INVALID_LOGIN })

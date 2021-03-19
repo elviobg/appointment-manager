@@ -12,7 +12,8 @@ module.exports.login = async function (req, res) {
       }
       if (await bcrypt.compare(password, user.password)) {
         const token = JWT.generateJWT(user.email)
-        res.status(200).send({ auth: true, token: token })
+        const fullname = user.firstname.concat(' ').concat(user.lastname)
+        res.status(200).send({ auth: true, fullname: fullname, token: token })
       } else {
         res.status(401).send({ auth: false, message: 'Invalid login and/or password' })
       }
