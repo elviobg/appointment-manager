@@ -14,6 +14,7 @@ import { FormContainer } from '../../components/FormContainer'
 import { EditPatientForm } from './form'
 import { AppointmentsList } from './../appointments/list'
 import { CreateAppointmentToPatientForm } from './../appointments/form'
+import MESSAGES from '../../services/messages'
 
 class PatientDetails extends Component {
   state = {
@@ -22,8 +23,6 @@ class PatientDetails extends Component {
     patient: null,
     appointments: null
   }
-
-  triggerButtonText = 'Edit'
 
   componentDidMount () {
     this.getPatientByUuid()
@@ -37,10 +36,9 @@ class PatientDetails extends Component {
         .then((response) => {
           this.setState({ patient: response.data })
           this.setState({ isLoadingPatient: false })
-          console.log('carregou do db ->', response.data[0])
         })
     } catch (err) {
-      this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
     }
   }
 
@@ -51,7 +49,7 @@ class PatientDetails extends Component {
           this.props.history.push({ pathname: '/patients' })
         })
     } catch (err) {
-      this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
     }
   }
 
@@ -59,18 +57,17 @@ class PatientDetails extends Component {
     try {
       await api.get('/appointments/patient/'.concat(this.props.match.params.id))
         .then((response) => {
-          console.log('carregou appointments do db ->', response.data[0])
           this.setState({ appointments: response.data })
           this.setState({ isLoadingAppointments: false })
         })
     } catch (err) {
-      this.setState({ error: 'Não foi possivel obter todos os agendamentos' })
+      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
     }
   }
 
   render () {
     if (this.state.isLoadingAppointments || this.state.isLoadingPatient) {
-      return (<h1>Is Loading... please wait...</h1>)
+      return (<h1>{MESSAGES.FEEDBACK.LOADING}</h1>)
     }
     const { classes } = this.props
 
@@ -80,16 +77,16 @@ class PatientDetails extends Component {
           <Grid item xs={12} md={8} lg={9}>
             <Paper className={classes.paper}>
               <h1>{this.state.patient.name}</h1>
-              <p className={classes.p}>Phone: {this.state.patient.phone}</p>
-              <p className={classes.p}>Birthday: {this.state.patient.birthday.split('T')[0]}</p>
-              <p className={classes.p}>Gender: {this.state.patient.gender}</p>
-              <p className={classes.p}>Altura: {this.state.patient.height} m</p>
-              <p className={classes.p}>Peso: {this.state.patient.weight} kg</p>
+              <p className={classes.p}>{MESSAGES.LABEL.PHONE}: {this.state.patient.phone}</p>
+              <p className={classes.p}>{MESSAGES.LABEL.BIRTHDAY}: {this.state.patient.birthday.split('T')[0]}</p>
+              <p className={classes.p}>{MESSAGES.LABEL.GENDER}: {this.state.patient.gender}</p>
+              <p className={classes.p}>{MESSAGES.LABEL.HEIGHT}: {this.state.patient.height} m</p>
+              <p className={classes.p}>{MESSAGES.LABEL.WEIGHT}: {this.state.patient.weight} kg</p>
             </Paper>
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
             <Paper className={classes.paper}>
-                <FormContainer triggerButtonText={this.triggerButtonText} form={<EditPatientForm patient={this.state.patient} />} />
+                <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT} form={<EditPatientForm patient={this.state.patient} />} />
                 <Button
                   spacing={3}
                   fullWidth
@@ -98,17 +95,17 @@ class PatientDetails extends Component {
                   className={classes.button}
                   onClick={() => this.deletePatient()}
                 >
-                  Delete
+                  {MESSAGES.BUTTONS.DELETE}
                 </Button>
             </Paper>
           </Grid>
           <Grid item xs={3}>
-            <FormContainer triggerButtonText={'New Appointment'} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient}/>} />
+            <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient}/>} />
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12}>
-                <h2>Appointments</h2>
+                <h2>{MESSAGES.LABEL.APPOINTMENTS}</h2>
               </Grid>
               <AppointmentsList appointments={this.state.appointments} hidePatientColumn={true}/>
             </Paper>

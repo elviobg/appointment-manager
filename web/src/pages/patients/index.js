@@ -10,14 +10,13 @@ import Dashboard from '../../components/Dashboard'
 import styles from './style'
 import api from '../../services/api'
 import PatientsList from './list'
+import MESSAGES from '../../services/messages'
 
 class Patients extends Component {
 state = {
   isLoading: true,
   allPatients: null
 }
-
-triggerButtonText = 'Create Pacient'
 
 componentDidMount () {
   this.getPatients()
@@ -31,20 +30,20 @@ async getPatients () {
         this.setState({ isLoading: false })
       })
   } catch (err) {
-    this.setState({ error: 'Houve um problema ao solicitar os pacientes do servidor' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
 render () {
   if (this.state.isLoading) {
-    return (<h1>Is Loading... please wait...</h1>)
+    return (<h1>{MESSAGES.FEEDBACK.LOADING}</h1>)
   }
 
   return (
     <Dashboard contentBoard={
       <Grid container spacing={1}>
         <Grid item xs={3}>
-          <FormContainer triggerButtonText={this.triggerButtonText} form={<CreatePatientForm />} />
+          <FormContainer triggerButtonText={MESSAGES.BUTTONS.CREATE_PACIENT} form={<CreatePatientForm />} />
         </Grid>
           <PatientsList patients={this.state.allPatients} history={this.props.history}/>
       </Grid>

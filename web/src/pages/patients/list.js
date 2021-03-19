@@ -9,6 +9,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
 
 import styles from './style'
+import MESSAGES from '../../services/messages'
 
 class PatientsList extends Component {
   patientDetails (patientUuid) {
@@ -17,9 +18,9 @@ class PatientsList extends Component {
 
   columns = [
     { field: 'uuid', hide: true },
-    { field: 'name', flex: 2, headerName: 'Name' },
-    { field: 'phone', flex: 2, headerName: 'Phone' },
-    { field: 'birthday', flex: 2, headerName: 'Birthday' },
+    { field: 'name', flex: 2, headerName: MESSAGES.LABEL.FIRSTNAME },
+    { field: 'phone', flex: 2, headerName: MESSAGES.LABEL.PHONE },
+    { field: 'birthday', flex: 2, headerName: MESSAGES.LABEL.BIRTHDAY },
     {
       field: '',
       flex: 1,

@@ -9,6 +9,7 @@ import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 
 import api from './../../services/api'
+import MESSAGES from './../../services/messages'
 
 const state = {
   error: null
@@ -48,7 +49,7 @@ const createNewPatient = async (event) => {
         console.log(response)
       })
   } catch (err) {
-    this.setState({ error: 'Houve um problema ao criar novo usuário' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
@@ -66,7 +67,7 @@ const updatePatient = async (event) => {
         console.log(response)
       })
   } catch (err) {
-    this.setState({ error: 'Houve um problema ao atualizar usuário' })
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
 
@@ -90,7 +91,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           required
           fullWidth
           id="name"
-          label="Name"
+          label={MESSAGES.LABEL.FIRSTNAME}
           name="name"
           autoComplete="name"
           autoFocus
@@ -102,7 +103,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           required
           fullWidth
           id="phone"
-          label="Phone Number"
+          label={MESSAGES.LABEL.PHONE}
           name="phone"
           autoComplete="phone"
           autoFocus
@@ -118,7 +119,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
             margin="normal"
             required
             id="birthday"
-            label="Birthday"
+            label={MESSAGES.LABEL.BIRTHDAY}
             name="birthday"
             autoComplete="birthday"
             type="date"
@@ -129,7 +130,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
             variant="outlined"
             className={classes.formControl}
             >
-            <InputLabel required htmlFor="gender">Gender</InputLabel>
+            <InputLabel required htmlFor="gender">{MESSAGES.LABEL.GENDER}</InputLabel>
             <Select
               native
               required
@@ -140,9 +141,8 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
                 id: 'gender'
               }}
             >
-              <option value={''}></option>
-              <option value={'male'}>male</option>
-              <option value={'female'}>female</option>
+              <option value={'female'}>Feminino</option>
+              <option value={'male'}>Masculino</option>
             </Select>
           </FormControl>
         </FormControl>
@@ -152,7 +152,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           required
           fullWidth
           id="height"
-          label="height"
+          label={MESSAGES.LABEL.HEIGHT}
           name="height"
           autoComplete="height"
           autoFocus
@@ -164,7 +164,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           required
           fullWidth
           id="weight"
-          label="weight"
+          label={MESSAGES.LABEL.WEIGHT}
           name="weight"
           autoComplete="weight"
           autoFocus
@@ -177,7 +177,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           color="primary"
           className={classes.submit}
         >
-          Create
+          {MESSAGES.BUTTONS.CREATE}
         </Button>
       </form>
     </div>
