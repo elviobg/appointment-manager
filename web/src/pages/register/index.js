@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container'
 import styles from './style'
 import api from '../../services/api'
 import { isAuthenticated } from '../../services/auth'
+import MESSAGES from '../../services/messages'
 
 class SignUp extends Component {
   state = {
@@ -37,15 +38,15 @@ class SignUp extends Component {
     const { firstname, lastname, email, password } = this.state
 
     if (!firstname || !lastname || !email || !password) {
-      this.setState({ error: 'Preencha todos os dados para se cadastrar.' })
+      this.setState({ error: MESSAGES.ERROR.MISSING_FIELDS })
     } else if (!this.validateEmail(email)) {
-      this.setState({ error: 'E-mail inválido.' })
+      this.setState({ error: MESSAGES.ERROR.INVALID_EMAIL })
     } else {
       try {
         await api.post('/users', { firstname, lastname, email, password })
         history.push('/home')
       } catch (err) {
-        this.setState({ error: 'Ocorreu um erro ao registrar sua conta.' })
+        this.setState({ error: MESSAGES.ERROR.SIGN_UP })
       }
     }
   }
@@ -66,7 +67,7 @@ class SignUp extends Component {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign up
+              {MESSAGES.SIGNUP.CREATE_ACCOUNT}
             </Typography>
             {this.state.error && <p>{this.state.error}</p>}
             <form className={classes.form} validate>
@@ -79,7 +80,7 @@ class SignUp extends Component {
                     fullWidth
                     id="firstName"
                     name="firstName"
-                    label="First Name"
+                    label={MESSAGES.LABEL.FIRSTNAME}
                     autoFocus
                     onChange={e => this.setState({ firstname: e.target.value })}
                   />
@@ -90,8 +91,8 @@ class SignUp extends Component {
                     required
                     fullWidth
                     id="lastName"
-                    label="Last Name"
-                    name="lastName"
+                    label={MESSAGES.LABEL.LASTNAME}
+                    name="LastName"
                     autoComplete="lname"
                     onChange={e => this.setState({ lastname: e.target.value })}
                   />
@@ -102,7 +103,7 @@ class SignUp extends Component {
                     required
                     fullWidth
                     id="email"
-                    label="Email Address"
+                    label={MESSAGES.LABEL.EMAIL}
                     name="email"
                     autoComplete="email"
                     type="email"
@@ -114,7 +115,7 @@ class SignUp extends Component {
                     variant="outlined"
                     required
                     fullWidth
-                    label="Password"
+                    label={MESSAGES.LABEL.PASSWORD}
                     type="password"
                     id="password"
                     onChange={e => this.setState({ password: e.target.value })}
@@ -128,12 +129,12 @@ class SignUp extends Component {
                 color="primary"
                 className={classes.submit}
               >
-                Sign Up
+                {MESSAGES.SIGNUP.CREATE_ACCOUNT}
               </Button>
               <Grid container justify="flex-end">
                 <Grid item>
                   <Link to='/' href="/" variant="body2" >
-                    Already have an account? Sign in
+                    {MESSAGES.SIGNUP.LINK_SIGIN}
                   </Link>
                 </Grid>
               </Grid>

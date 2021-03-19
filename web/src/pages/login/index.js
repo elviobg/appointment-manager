@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container'
 import styles from './style'
 import api from '../../services/api'
 import { login, isAuthenticated } from '../../services/auth'
+import MESSAGES from '../../services/messages'
 
 class SignIn extends Component {
   state = {
@@ -28,14 +29,14 @@ class SignIn extends Component {
     event.preventDefault()
     const { email, password } = this.state
     if (!email || !password) {
-      this.setState({ error: 'Preencha e-mail e senha para continuar!' })
+      this.setState({ error: MESSAGES.ERROR.MISSING_FIELDS_REGISTER })
     } else {
       try {
         const response = await api.post('/users/login', { email, password })
         login(response.data.token)
         this.props.history.push('/home')
       } catch (err) {
-        this.setState({ error: 'Houve um problema com o login, e-mail ou senha inválidos' })
+        this.setState({ error: MESSAGES.ERROR.INVALID_LOGIN })
       }
     }
   }
@@ -57,7 +58,7 @@ class SignIn extends Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            {MESSAGES.SIGNIN.LOGIN}
           </Typography>
           <form className={classes.form} validate>
             <TextField
@@ -66,7 +67,7 @@ class SignIn extends Component {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label={MESSAGES.LABEL.EMAIL}
               name="email"
               autoComplete="email"
               autoFocus
@@ -78,7 +79,7 @@ class SignIn extends Component {
               margin="normal"
               required
               fullWidth
-              label="Password"
+              label={MESSAGES.LABEL.PASSWORD}
               type="password"
               id="password"
               autoComplete="current-password"
@@ -93,12 +94,12 @@ class SignIn extends Component {
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              {MESSAGES.SIGNIN.LOGIN}
             </Button>
             <Grid container>
               <Grid item>
                 <Link href="/register" to='/register'>
-                  {"Don't have an account? Sign Up"}
+                  {MESSAGES.SIGNIN.LINK_SIGUP}
                 </Link>
               </Grid>
             </Grid>
