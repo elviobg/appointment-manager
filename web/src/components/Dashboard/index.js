@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import clsx from 'clsx'
+import { withRouter, Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 import { withStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
@@ -13,15 +16,15 @@ import Badge from '@material-ui/core/Badge'
 import Container from '@material-ui/core/Container'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import styles from './dashboard.style'
-import { withRouter, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import ToogleMenuList from '../ToggleMenuList'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import PeopleIcon from '@material-ui/icons/People'
 import AssignmentIcon from '@material-ui/icons/Assignment'
+
+import styles from './dashboard.style'
+import ToogleMenuList from '../ToggleMenuList'
+import MESSAGES from './../../services/messages'
 
 class DashBoard extends Component {
 state = {
@@ -30,12 +33,10 @@ state = {
 
 handleDrawerOpen = () => {
   this.setState({ open: true })
-  console.log('open', this.state.open)
 }
 
 handleDrawerClose = () => {
   this.setState({ open: false })
-  console.log('close', this.state.open)
 }
 
 render () {
@@ -82,13 +83,13 @@ render () {
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Customers" />
+            <ListItemText primary={MESSAGES.LABEL.PATIENTS} />
           </ListItem>
           <ListItem button component={Link} to='/appointments'>
             <ListItemIcon>
               <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Appointments" />
+            <ListItemText primary={MESSAGES.LABEL.APPOINTMENTS} />
           </ListItem>
         </List>
         <Divider />
