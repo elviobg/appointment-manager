@@ -12,7 +12,8 @@ import api from './../../services/api'
 import MESSAGES from './../../services/messages'
 
 const state = {
-  error: null
+  error: null,
+  uuid: ''
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -62,7 +63,7 @@ const updatePatient = async (event) => {
   const height = event.target.height.value
   const weight = event.target.weight.value
   try {
-    await api.put('/patients/'.concat(uuid), { name, phone, birthday, gender, height, weight })
+    await api.put('/patients/'.concat(state.uuid), { name, phone, birthday, gender, height, weight })
       .then((response) => {
         console.log(response)
       })
@@ -70,8 +71,6 @@ const updatePatient = async (event) => {
     this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
   }
 }
-
-let uuid
 
 export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   const classes = useStyles()
@@ -200,7 +199,7 @@ export const CreatePatientForm = () => {
 
 export const EditPatientForm = ({ patient }) => {
   patient.birthday = patient.birthday.slice(0, 10)
-  uuid = patient.uuid
+  state.uuid = patient.uuid
   return (
     <PatientForm onSubmit={updatePatient} defaultPacientValues={patient}/>
   )

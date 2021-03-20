@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       get () {
         const moment = require('moment')
-        return moment(this.getDataValue('date')).format('DD/MM/YYYY')
+        return moment(this.getDataValue('birthday')).format('DD/MM/YYYY')
       }
     },
     gender: {
