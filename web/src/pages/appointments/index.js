@@ -9,7 +9,7 @@ import { CreateAppointmentForm } from './form'
 import Dashboard from './../../components/Dashboard'
 import api from '../../services/api'
 import MESSAGES from '../../services/messages'
-import { AppointmentsList } from './list'
+import AppointmentsList from './list'
 
 class Appointments extends Component {
 state = {

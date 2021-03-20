@@ -1,44 +1,53 @@
-import React from 'react'
+import React, { Component, useState } from 'react'
+import { Confirm } from 'react-st-modal'
+import PropTypes from 'prop-types'
 
 import Grid from '@material-ui/core/Grid'
 import { DataGrid, CellParams, GridApi } from '@material-ui/data-grid'
 import Paper from '@material-ui/core/Paper'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
 import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
+import styles from './style'
 import api from '../../services/api'
 import MESSAGES from '../../services/messages'
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column'
+class AppointmentsList extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      appointments: this.props.appointments
+    }
   }
-}))
 
-async function deleteAppointment (uuid) {
-  try {
-    await api.delete('/appointments/'.concat(uuid))
-  } catch (err) {
-    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+  removeAppointment (uuid) {
+    const filtered = this.state.appointments.filter(function (current, index, arr) {
+      return current.uuid != uuid
+    })
+    this.setState({ appointments: filtered })
+    this.forceUpdate()
   }
-}
 
-export const AppointmentsList = ({ appointments, hidePatientColumn }) => {
-  const classes = useStyles()
+  async deleteAppointment (uuid) {
+    try {
+      await api.delete('/appointments/'.concat(uuid))
+        .then((response) => {
+          this.removeAppointment(uuid)
+        })
+    } catch (err) {
+      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+    }
+  }
 
-  const columns = [
+  columns = [
     { field: 'uuid', hide: true },
     {
       field: 'patient',
-      hide: hidePatientColumn,
+      hide: this.props.hidePatientColumn,
       flex: 3,
       headerName: MESSAGES.LABEL.PATIENT,
       valueGetter: (params) => {
-        console.log(params.row.patient.name)
         return params.row.patient.name
       }
     },
@@ -61,11 +70,16 @@ export const AppointmentsList = ({ appointments, hidePatientColumn }) => {
           fields.forEach((f) => {
             thisRow[f] = params.getValue(f)
           })
-          return deleteAppointment(thisRow.uuid)
+          return this.deleteAppointment(thisRow.uuid)
         }
         return (
           <Button
-            onClick={onClick}
+            onClick={async () => {
+              const result = await Confirm(MESSAGES.ALERT.CONFIRM_EXCLUDE, MESSAGES.ALERT.EXCLUDE_APPOINTMENT)
+              if (result) {
+                onClick()
+              }
+            }}
             variant="contained"
             color="secondary"
             title="delete">
@@ -76,13 +90,22 @@ export const AppointmentsList = ({ appointments, hidePatientColumn }) => {
     }
   ]
 
-  return (
-    <Grid item xs={12}>
-        <Paper className={classes.paper}>
-          <div style={{ height: 500, width: '100%' }}>
-            <DataGrid disableColumnMenu={true} hideFooterSelectedRowCount={true} getRowId={(row) => row.uuid} rows={appointments} columns={columns} pageSize={10} />
-          </div>
-        </Paper>
-    </Grid>
-  )
+  render () {
+    const { classes } = this.props
+    return (
+      <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <div style={{ height: 500, width: '100%' }}>
+              <DataGrid disableColumnMenu={true} hideFooterSelectedRowCount={true} getRowId={(row) => row.uuid} rows={this.props.appointments} columns={this.columns} pageSize={10} />
+            </div>
+          </Paper>
+      </Grid>
+    )
+  }
 }
+
+AppointmentsList.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(AppointmentsList)

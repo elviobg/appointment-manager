@@ -1,5 +1,10 @@
 const MESSAGES = {}
 
+const ALERT = {}
+ALERT.CONFIRM_EXCLUDE = 'Tem certeza disso? Essa ação não poderá ser revertida'
+ALERT.EXCLUDE_APPOINTMENT = 'Excluir consulta'
+MESSAGES.ALERT = ALERT
+
 const BUTTONS = {}
 BUTTONS.CREATE = 'Criar'
 BUTTONS.CREATE_PACIENT = 'Criar paciente'

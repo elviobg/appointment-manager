@@ -15,7 +15,8 @@ import MESSAGES from '../../services/messages'
 class Patients extends Component {
 state = {
   isLoading: true,
-  allPatients: null
+  allPatients: null,
+  error: null
 }
 
 componentDidMount () {

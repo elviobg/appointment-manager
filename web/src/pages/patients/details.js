@@ -12,7 +12,7 @@ import styles from './style'
 import api from './../../services/api'
 import { FormContainer } from '../../components/FormContainer'
 import { EditPatientForm } from './form'
-import { AppointmentsList } from './../appointments/list'
+import AppointmentsList from './../appointments/list'
 import { CreateAppointmentToPatientForm } from './../appointments/form'
 import MESSAGES from '../../services/messages'
 
@@ -48,6 +48,14 @@ class PatientDetails extends Component {
         .then((response) => {
           this.props.history.push({ pathname: '/patients' })
         })
+    } catch (err) {
+      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+    }
+  }
+
+  async confirmDialogResult () {
+    try {
+      console.log('clicou em show occonfirm OK!')
     } catch (err) {
       this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
     }
