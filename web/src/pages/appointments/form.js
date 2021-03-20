@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Alert } from 'react-st-modal'
 
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -12,7 +13,8 @@ import api from '../../services/api'
 import MESSAGES from '../../services/messages'
 
 const state = {
-  patientUuid: ''
+  patientUuid: '',
+  appointments: []
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +61,23 @@ const createAppointment = async (patientUuid, date, observation) => {
 }
 
 const editAppointment = async (event) => {
+  event.preventDefault(event)
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
+  }
+
   console.log('edit...')
+  console.log(event.target.date.value)
+  console.log(observation)
+  try {
+    await api.patch('/appointments/'.concat(event.target.date.value), { observation })
+      .then((response) => {
+        console.log(response)
+      })
+  } catch (err) {
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+  }
 }
 
 const PatientField = ({ patients, defaultPacientUuid }) => {
@@ -182,7 +200,7 @@ export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
       onSubmit={createNewAppointmentWithPatient}
       fieldsContent={
         <div>
-          <h2>Patient: { preDefinedPatient.name }</h2>
+          <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>
           <DateField defaultDateValue={ new Date().toISOString().slice(0, 16) }/>
           <ObservationField defaultObservationValue={''}/>
         </div>
@@ -192,18 +210,72 @@ export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
   )
 }
 
-export const EditAppointmentForm = ({ selectedPacient, patients }) => {
-  selectedPacient.date = selectedPacient.date.slice(0, 16)
-  return (
-    <AppointmentForm
-      onSubmit={editAppointment}
-      fieldsContent={
-        <div>
-          <DateField defaultDateValue={ new Date().toISOString().slice(0, 16) }/>
-          <ObservationField defaultObservationValue={''}/>
-        </div>
-      }
-      buttonLabel={'Create'}
-    />
-  )
+export const EditAppointmentForm = ({ preDefinedPatient, appointments }) => {
+  const classes = useStyles()
+  const [observation, setObservation] = useState(appointments[0].observation)
+  const [date, setDate] = useState('')
+  const handleChangeDate = (event) => {
+    setDate(event.target.value)
+    const filtered = appointments.filter(function (current, index, arr) {
+      return current.uuid == event.target.value
+    })
+    setObservation(filtered[0].observation)
+  }
+
+  const handleChangeObservation = (event) => {
+    setObservation(event.target.value)
+  }
+
+  if (appointments.length > 0) {
+    return (
+      <AppointmentForm
+        onSubmit={editAppointment}
+        fieldsContent={
+          <div>
+            <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>
+            <FormControl fullWidth variant="outlined" autoComplete className={classes.formControl}>
+              <InputLabel id='label-selector-date' htmlFor="date">{MESSAGES.LABEL.DATE}</InputLabel>
+              <Select
+                labelId='label-selector-date'
+                native
+                required
+                value={date}
+                onChange={handleChangeDate}
+                inputProps={{
+                  name: 'date',
+                  id: 'date'
+                }}
+              >
+                {(appointments || []).map((appointment) => {
+                  return <option key={appointment.date} value={appointment.uuid}>{appointment.date}</option>
+                })}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth className={classes.formControl}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="observation"
+                onChange={handleChangeObservation}
+                value={observation}
+                label={MESSAGES.LABEL.OBSERVATION}
+                name="observation"
+                autoFocus
+                multiline
+                rows={4}
+              />
+            </FormControl>
+          </div>
+        }
+        buttonLabel={MESSAGES.BUTTONS.EDIT}
+      />
+    )
+  } else {
+    return (
+      <div>
+        Nenhuma consulta agendada
+      </div>
+    )
+  }
 }

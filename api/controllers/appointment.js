@@ -67,13 +67,9 @@ module.exports.update = function (req, res) {
   const db = require('../database/databaseConnection')
 
   const id = req.params.id
-  const patientId = req.body.patient_id
-  const date = req.body.date
   const observation = req.body.observation
 
   db.appointments.update({
-    patientUuid: patientId,
-    date: date,
     observation: observation
   },
   { where: { uuid: id } })

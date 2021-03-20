@@ -14,7 +14,7 @@ import api from './../../services/api'
 import { FormContainer } from '../../components/FormContainer'
 import { EditPatientForm } from './form'
 import AppointmentsList from './../appointments/list'
-import { CreateAppointmentToPatientForm } from './../appointments/form'
+import { CreateAppointmentToPatientForm, EditAppointmentForm } from './../appointments/form'
 import MESSAGES from '../../services/messages'
 
 class PatientDetails extends Component {
@@ -113,8 +113,11 @@ class PatientDetails extends Component {
                 </Button>
             </Paper>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} md={3} lg={3}>
             <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient}/>} />
+          </Grid>
+          <Grid item xs={12} md={3} lg={3}>
+            <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT_APPOINTMENT} form={<EditAppointmentForm preDefinedPatient={this.state.patient} appointments={this.state.appointments}/>} />
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>

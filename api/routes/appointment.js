@@ -11,7 +11,7 @@ function appointmentsRoutes () {
   router.get('/:id', JWT.verifyJWT, appointmentController.getByID)
   router.get('/patient/:id', JWT.verifyJWT, appointmentController.getByPatientID)
   router.post('/', JWT.verifyJWT, appointmentController.insert)
-  router.put('/:id', JWT.verifyJWT, appointmentController.update)
+  router.patch('/:id', JWT.verifyJWT, appointmentController.update)
   router.delete('/:id', JWT.verifyJWT, appointmentController.remove)
 
   return router
