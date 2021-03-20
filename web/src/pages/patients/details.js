@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { Confirm } from 'react-st-modal'
 
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -101,7 +102,12 @@ class PatientDetails extends Component {
                   variant="contained"
                   color="secondary"
                   className={classes.button}
-                  onClick={() => this.deletePatient()}
+                  onClick={async () => {
+                    const result = await Confirm(MESSAGES.ALERT.CONFIRM_EXCLUDE, MESSAGES.ALERT.EXCLUDE_PATIENT)
+                    if (result) {
+                      this.deletePatient()
+                    }
+                  }}
                 >
                   {MESSAGES.BUTTONS.DELETE}
                 </Button>
