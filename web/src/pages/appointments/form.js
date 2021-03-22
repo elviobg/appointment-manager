@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Alert } from 'react-st-modal'
 
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -9,7 +8,6 @@ import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
-import api from '../../services/api'
 import MESSAGES from '../../services/messages'
 
 const state = {
@@ -167,7 +165,7 @@ export const EditAppointmentForm = ({ preDefinedPatient, appointments, onSubmit 
   const handleChangeDate = (event) => {
     setDate(event.target.value)
     const filtered = appointments.filter(function (current, index, arr) {
-      return current.uuid == event.target.value
+      return current.uuid === event.target.value
     })
     setObservation(filtered[0].observation)
   }

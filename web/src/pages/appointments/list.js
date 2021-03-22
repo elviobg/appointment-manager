@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import { Confirm } from 'react-st-modal'
 import PropTypes from 'prop-types'
 
@@ -7,7 +7,7 @@ import { DataGrid, CellParams, GridApi } from '@material-ui/data-grid'
 import Paper from '@material-ui/core/Paper'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForeverOutlined'
 import Button from '@material-ui/core/Button'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 import styles from './style'
 import api from '../../services/api'
@@ -23,7 +23,7 @@ class AppointmentsList extends Component {
 
   removeAppointment (uuid) {
     const filtered = this.state.appointments.filter(function (current, index, arr) {
-      return current.uuid != uuid
+      return current.uuid !== uuid
     })
     this.setState({ appointments: filtered })
     this.forceUpdate()
