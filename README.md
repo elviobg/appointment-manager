@@ -23,11 +23,13 @@ Install docker and docker-compose in your host machine:
 
 At first time run:
 * $ docker-compose build
+
 and create db
-* $ docker-compose -f /path/to/docer-compose.dev.yml up migrate  
+
+* $ docker-compose -f /path/to/docker-compose.dev.yml up migrate  
 
 After that just run:
-* $ docker-compose -f /path/to/docer-compose.dev.yml up api web   
+* $ docker-compose -f /path/to/docker-compose.dev.yml up api web   
 
 This will start, client, server and db in developer mode, using nodemon to keep tracking server-side changes and updates.
 
