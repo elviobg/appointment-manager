@@ -175,7 +175,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           color="primary"
           className={classes.submit}
         >
-          {MESSAGES.BUTTONS.CREATE}
+          {MESSAGES.BUTTONS.SAVE}
         </Button>
       </form>
     </div>
