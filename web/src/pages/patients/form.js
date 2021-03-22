@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import InputMask from 'react-input-mask'
+import moment from 'moment'
 
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -7,12 +9,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
+import Input from '@material-ui/core/Input'
 
 import api from './../../services/api'
 import MESSAGES from './../../services/messages'
 
 const state = {
-  error: null,
+  error: '',
   uuid: ''
 }
 
@@ -46,11 +49,8 @@ const createNewPatient = async (event) => {
   const weight = event.target.weight.value
   try {
     await api.post('/patients', { name, phone, birthday, gender, height, weight })
-      .then((response) => {
-        console.log(response)
-      })
-  } catch (err) {
-    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+  } catch (error) {
+    state.error = MESSAGES.ERROR.DB_CONNECTION
   }
 }
 
@@ -75,15 +75,27 @@ const updatePatient = async (event) => {
 export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   const classes = useStyles()
   const [gender, setGender] = useState(defaultPacientValues.gender)
-  const handleChange = (event) => {
+  const handleChangeGender = (event) => {
     setGender(event.target.value)
+  }
+  const [phone, setPhone] = useState(defaultPacientValues.phone)
+  const handleChangePhone = (event) => {
+    setPhone(event.target.value)
+  }
+  const [height, handleHeight] = useState(defaultPacientValues.height)
+  const handleChangeHeight = (event) => {
+    handleHeight(event.target.value)
+  }
+  const [weight, handleWeight] = useState(defaultPacientValues.weight)
+  const handleChangeWeight = (event) => {
+    handleWeight(event.target.value)
   }
   console.log(defaultPacientValues)
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <form onSubmit={onSubmit} className={classes.form}>
+      <form onSubmit={onSubmit} className={classes.form} validate>
         <TextField
           variant="outlined"
           margin="normal"
@@ -96,18 +108,25 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           autoFocus
           defaultValue={defaultPacientValues.name}
         />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="phone"
-          label={MESSAGES.LABEL.PHONE}
-          name="phone"
-          autoComplete="phone"
-          autoFocus
-          defaultValue={defaultPacientValues.phone}
-        />
+        <InputMask
+          mask="(99) 9 9999-9999"
+          value={phone}
+          onChange={handleChangePhone}
+          disabled={false}
+          maskChar=" "
+        >
+          {() => <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="phone"
+            label={MESSAGES.LABEL.PHONE}
+            name="phone"
+            autoComplete="phone"
+            autoFocus
+          />}
+        </InputMask>
         <FormControl
           fullWidth
           variant="outlined"
@@ -123,7 +142,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
             autoComplete="birthday"
             type="date"
             autoFocus
-            defaultValue={defaultPacientValues.birthday}
+            defaultValue={moment(defaultPacientValues.birthday, 'DD/MM/YYYY').format('YYYY-MM-DD')}
           />
           <FormControl
             variant="outlined"
@@ -134,7 +153,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
               native
               required
               value={gender}
-              onChange={handleChange}
+              onChange={handleChangeGender}
               inputProps={{
                 name: 'gender',
                 id: 'gender'
@@ -146,6 +165,10 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           </FormControl>
         </FormControl>
         <TextField
+          type="number"
+          step={0.01}
+          value={height}
+          onChange={handleChangeHeight}
           variant="outlined"
           margin="normal"
           required
@@ -155,9 +178,16 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           name="height"
           autoComplete="height"
           autoFocus
-          defaultValue={defaultPacientValues.height}
+          isNumericString
+          InputLabelProps={{
+            shrink: true
+          }}
         />
         <TextField
+          type="number"
+          step={0.01}
+          value={weight}
+          onChange={handleChangeWeight}
           variant="outlined"
           margin="normal"
           required
@@ -167,7 +197,9 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
           name="weight"
           autoComplete="weight"
           autoFocus
-          defaultValue={defaultPacientValues.weight}
+          InputLabelProps={{
+            shrink: true
+          }}
         />
         <Button
           type="submit"
@@ -198,7 +230,6 @@ export const CreatePatientForm = () => {
 }
 
 export const EditPatientForm = ({ patient }) => {
-  patient.birthday = patient.birthday.slice(0, 10)
   state.uuid = patient.uuid
   return (
     <PatientForm onSubmit={updatePatient} defaultPacientValues={patient}/>
