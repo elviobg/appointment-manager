@@ -177,10 +177,10 @@ const AppointmentForm = ({ onSubmit, fieldsContent, buttonLabel }) => {
   )
 }
 
-export const CreateAppointmentForm = ({ patients }) => {
+export const CreateAppointmentForm = ({ patients, onSubmit }) => {
   return (
     <AppointmentForm
-      onSubmit={createNewAppointment}
+      onSubmit={onSubmit}
       fieldsContent={
         <div>
           <PatientField patients={patients} defaultPacientUuid={''} />

@@ -42,6 +42,25 @@ async getAppointments () {
   }
 }
 
+createAppointment = async event => {
+  event.preventDefault(event)
+  const patientUuid = event.target.patient.value
+  const date = event.target.date.value
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
+  }
+
+  try {
+    await api.post('/appointments', { date, patient_id: patientUuid, observation })
+      .then((response) => {
+        this.getAppointments()
+      })
+  } catch (err) {
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+  }
+}
+
 async getPacients () {
   try {
     await api.get('/patients')
@@ -63,7 +82,7 @@ render () {
       <Dashboard contentBoard={
         <Grid container spacing={1}>
           <Grid item xs={3}>
-              <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentForm patients={this.state.allPatients}/>} />
+              <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentForm onSubmit={this.createAppointment} patients={this.state.allPatients}/>} />
           </Grid>
           <AppointmentsList appointments={this.state.allAppointments} hidePatientColumn={false} />
         </Grid>
