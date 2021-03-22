@@ -22,6 +22,7 @@ Install docker and docker-compose in your host machine:
 
 
 #### Build and start your app
+First configure api .env file in api root path according to your system ( Edit example.env and rename to .env )
 
 At first time run:
 * $ docker-compose build
