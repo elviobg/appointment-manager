@@ -1,6 +1,7 @@
 # Appointment manager
 
 Hi! 
+
 This is an web app to manage clinical appointments.
 It implements a RESTful api server developed in **Node.js** with UI in **React.js** and Docker-Compose to manage enviroments.
 
@@ -35,5 +36,7 @@ This will start, client, server and db in developer mode, using nodemon to keep 
 
 With server running it will be disponible at http://localhost:3000
 And full app will be disponible at http://localhost:8080
+
+To preview system usabilituy images from screenshots can be found in docs folder
 
 Feel free to send issues or pull requests 
