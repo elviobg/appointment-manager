@@ -22,7 +22,8 @@ class PatientDetails extends Component {
     isLoadingPatient: true,
     isLoadingAppointments: true,
     patient: null,
-    appointments: null
+    appointments: null,
+    error: null
   }
 
   componentDidMount () {
@@ -54,14 +55,6 @@ class PatientDetails extends Component {
     }
   }
 
-  async confirmDialogResult () {
-    try {
-      console.log('clicou em show occonfirm OK!')
-    } catch (err) {
-      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
-    }
-  }
-
   async getAppointmentsByPatient () {
     try {
       await api.get('/appointments/patient/'.concat(this.props.match.params.id))
@@ -71,6 +64,62 @@ class PatientDetails extends Component {
         })
     } catch (err) {
       this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+    }
+  }
+
+  createAppointment = async event => {
+    event.preventDefault(event)
+    const date = event.target.date.value
+    let observation = null
+    if (typeof event.target.observation !== 'undefined') {
+      observation = event.target.observation.value
+    }
+
+    try {
+      await api.post('/appointments', { date, patient_id: this.state.patient.uuid, observation })
+        .then((response) => {
+          this.getAppointmentsByPatient()
+        })
+    } catch (err) {
+      this.state({ error: MESSAGES.ERROR.DB_CONNECTION })
+    }
+  }
+
+  editAppointment = async event => {
+    event.preventDefault(event)
+    let observation = null
+    if (typeof event.target.observation !== 'undefined') {
+      observation = event.target.observation.value
+    }
+
+    console.log('edit...')
+    console.log(event.target.date.value)
+    console.log(observation)
+    try {
+      await api.patch('/appointments/'.concat(event.target.date.value), { observation })
+        .then((response) => {
+          this.getAppointmentsByPatient()
+        })
+    } catch (err) {
+      this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+    }
+  }
+
+  updatePatient = async event => {
+    event.preventDefault(event)
+    const name = event.target.name.value
+    const phone = event.target.phone.value
+    const birthday = event.target.birthday.value
+    const gender = event.target.gender.value
+    const height = event.target.height.value
+    const weight = event.target.weight.value
+    try {
+      await api.put('/patients/'.concat(this.state.patient.uuid), { name, phone, birthday, gender, height, weight })
+        .then((response) => {
+          this.getPatientByUuid()
+        })
+    } catch (err) {
+      this.state({ error: MESSAGES.ERROR.DB_CONNECTION })
     }
   }
 
@@ -95,7 +144,7 @@ class PatientDetails extends Component {
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
             <Paper className={classes.paper}>
-                <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT} form={<EditPatientForm patient={this.state.patient} />} />
+                <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT} form={<EditPatientForm onSubmit={this.updatePatient} patient={this.state.patient} />} />
                 <Button
                   spacing={3}
                   fullWidth
@@ -114,10 +163,10 @@ class PatientDetails extends Component {
             </Paper>
           </Grid>
           <Grid item xs={12} md={3} lg={3}>
-            <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient}/>} />
+            <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient} onSubmit={this.createAppointment}/>} />
           </Grid>
           <Grid item xs={12} md={3} lg={3}>
-            <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT_APPOINTMENT} form={<EditAppointmentForm preDefinedPatient={this.state.patient} appointments={this.state.appointments}/>} />
+            <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT_APPOINTMENT} form={<EditAppointmentForm preDefinedPatient={this.state.patient} appointments={this.state.appointments} onSubmit={this.editAppointment}/>} />
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>

@@ -30,56 +30,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const createNewAppointment = (event) => {
-  event.preventDefault(event)
-  let observation = null
-  if (typeof event.target.observation !== 'undefined') {
-    observation = event.target.observation.value
-  }
-  createAppointment(event.target.patient.value, event.target.date.value, observation)
-}
-
-const createNewAppointmentWithPatient = (event) => {
-  event.preventDefault(event)
-  let observation = null
-  if (typeof event.target.observation !== 'undefined') {
-    observation = event.target.observation.value
-  }
-  createAppointment(state.patientUuid, event.target.date.value, observation)
-}
-
-const createAppointment = async (patientUuid, date, observation) => {
-  console.log(patientUuid, date, observation)
-  try {
-    await api.post('/appointments', { date, patient_id: patientUuid, observation })
-      .then((response) => {
-        console.log(response)
-      })
-  } catch (err) {
-    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
-  }
-}
-
-const editAppointment = async (event) => {
-  event.preventDefault(event)
-  let observation = null
-  if (typeof event.target.observation !== 'undefined') {
-    observation = event.target.observation.value
-  }
-
-  console.log('edit...')
-  console.log(event.target.date.value)
-  console.log(observation)
-  try {
-    await api.patch('/appointments/'.concat(event.target.date.value), { observation })
-      .then((response) => {
-        console.log(response)
-      })
-  } catch (err) {
-    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
-  }
-}
-
 const PatientField = ({ patients, defaultPacientUuid }) => {
   const classes = useStyles()
   const [patientID, setPatientID] = useState('')
@@ -193,11 +143,11 @@ export const CreateAppointmentForm = ({ patients, onSubmit }) => {
   )
 }
 
-export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
+export const CreateAppointmentToPatientForm = ({ preDefinedPatient, onSubmit }) => {
   state.patientUuid = preDefinedPatient.uuid
   return (
     <AppointmentForm
-      onSubmit={createNewAppointmentWithPatient}
+      onSubmit={onSubmit}
       fieldsContent={
         <div>
           <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>
@@ -210,7 +160,7 @@ export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
   )
 }
 
-export const EditAppointmentForm = ({ preDefinedPatient, appointments }) => {
+export const EditAppointmentForm = ({ preDefinedPatient, appointments, onSubmit }) => {
   const classes = useStyles()
   const [observation, setObservation] = useState(appointments[0].observation)
   const [date, setDate] = useState('')
@@ -229,7 +179,7 @@ export const EditAppointmentForm = ({ preDefinedPatient, appointments }) => {
   if (appointments.length > 0) {
     return (
       <AppointmentForm
-        onSubmit={editAppointment}
+        onSubmit={onSubmit}
         fieldsContent={
           <div>
             <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>

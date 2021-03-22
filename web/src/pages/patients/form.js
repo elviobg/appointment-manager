@@ -39,24 +39,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const updatePatient = async (event) => {
-  event.preventDefault(event)
-  const name = event.target.name.value
-  const phone = event.target.phone.value
-  const birthday = event.target.birthday.value
-  const gender = event.target.gender.value
-  const height = event.target.height.value
-  const weight = event.target.weight.value
-  try {
-    await api.put('/patients/'.concat(state.uuid), { name, phone, birthday, gender, height, weight })
-      .then((response) => {
-        console.log(response)
-      })
-  } catch (err) {
-    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
-  }
-}
-
 export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   const classes = useStyles()
   const [gender, setGender] = useState(defaultPacientValues.gender)
@@ -214,9 +196,9 @@ export const CreatePatientForm = ({ onSubmit }) => {
   )
 }
 
-export const EditPatientForm = ({ patient }) => {
+export const EditPatientForm = ({ patient, onSubmit }) => {
   state.uuid = patient.uuid
   return (
-    <PatientForm onSubmit={updatePatient} defaultPacientValues={patient}/>
+    <PatientForm onSubmit={onSubmit} defaultPacientValues={patient}/>
   )
 }
