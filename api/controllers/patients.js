@@ -26,7 +26,7 @@ module.exports.insert = function (req, res) {
 
 module.exports.getAll = function (req, res) {
   const db = require('../database/databaseConnection')
-  db.patients.findAll({order: [['name']]})
+  db.patients.findAll({ order: [['name']] })
     .then(patients => {
       res.status(200).send(JSON.stringify(patients))
     })
