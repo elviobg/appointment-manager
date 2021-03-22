@@ -23,6 +23,24 @@ componentDidMount () {
   this.getPatients()
 }
 
+createNewPatient = async event => {
+  event.preventDefault(event)
+  const name = event.target.name.value
+  const phone = event.target.phone.value
+  const birthday = event.target.birthday.value
+  const gender = event.target.gender.value
+  const height = event.target.height.value
+  const weight = event.target.weight.value
+  try {
+    await api.post('/patients', { name, phone, birthday, gender, height, weight })
+      .then((response) => {
+        this.getPatients()
+      })
+  } catch (error) {
+    this.state.error = MESSAGES.ERROR.DB_CONNECTION
+  }
+}
+
 async getPatients () {
   try {
     await api.get('/patients')
@@ -44,7 +62,7 @@ render () {
     <Dashboard contentBoard={
       <Grid container spacing={1}>
         <Grid item xs={3}>
-          <FormContainer triggerButtonText={MESSAGES.BUTTONS.CREATE_PACIENT} form={<CreatePatientForm />} />
+          <FormContainer triggerButtonText={MESSAGES.BUTTONS.CREATE_PACIENT} form={<CreatePatientForm onSubmit={this.createNewPatient} />} />
         </Grid>
           <PatientsList patients={this.state.allPatients} history={this.props.history}/>
       </Grid>

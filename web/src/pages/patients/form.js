@@ -39,21 +39,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const createNewPatient = async (event) => {
-  event.preventDefault(event)
-  const name = event.target.name.value
-  const phone = event.target.phone.value
-  const birthday = event.target.birthday.value
-  const gender = event.target.gender.value
-  const height = event.target.height.value
-  const weight = event.target.weight.value
-  try {
-    await api.post('/patients', { name, phone, birthday, gender, height, weight })
-  } catch (error) {
-    state.error = MESSAGES.ERROR.DB_CONNECTION
-  }
-}
-
 const updatePatient = async (event) => {
   event.preventDefault(event)
   const name = event.target.name.value
@@ -215,7 +200,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   )
 }
 
-export const CreatePatientForm = () => {
+export const CreatePatientForm = ({ onSubmit }) => {
   const defaultPacientValues = {
     name: '',
     phone: '',
@@ -225,7 +210,7 @@ export const CreatePatientForm = () => {
     weight: ''
   }
   return (
-    <PatientForm onSubmit={createNewPatient} defaultPacientValues={defaultPacientValues}/>
+    <PatientForm onSubmit={onSubmit} defaultPacientValues={defaultPacientValues}/>
   )
 }
 
