@@ -6,10 +6,11 @@ This is an web app to manage clinical appointments.
 It implements a RESTful api server developed in **Node.js** with UI in **React.js** and Docker-Compose to manage enviroments.
 
 #Some of Dependencies
-EsLint to code guides
-Express to build api
-Material UI to visual/web interface
-Postgres DB with Sequelize ORM
+* EsLint to Standard JS code guides
+* Express to build api
+* JWT to api authentication
+* Material UI to visual/web interface
+* Postgres DB with Sequelize ORM to data storage
 
 ## How to use:
 
