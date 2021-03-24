@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button'
 import Dashboard from './../../components/Dashboard'
 import styles from './style'
 import api from './../../services/api'
-import { FormContainer } from '../../components/FormContainer'
 import { EditPatientForm } from './form'
 import AppointmentsList from './../appointments/list'
 import { CreateAppointmentToPatientForm, EditAppointmentForm } from './../appointments/form'
@@ -77,24 +76,6 @@ class PatientDetails extends Component {
     }
   }
 
-  createAppointment = async event => {
-    event.preventDefault(event)
-    const date = event.target.date.value
-    let observation = null
-    if (typeof event.target.observation !== 'undefined') {
-      observation = event.target.observation.value
-    }
-
-    try {
-      await api.post('/appointments', { date, patient_id: this.state.patient.uuid, observation })
-        .then((response) => {
-          this.getAppointmentsByPatient()
-        })
-    } catch (err) {
-      this.state({ error: MESSAGES.ERROR.DB_CONNECTION })
-    }
-  }
-
   editAppointment = async event => {
     event.preventDefault(event)
     let observation = null
@@ -140,9 +121,7 @@ class PatientDetails extends Component {
                   onClick={async () => {
                     await CustomDialog(<EditPatientForm patient={this.state.patient}/>, { title: MESSAGES.BUTTONS.EDIT, showCloseIcon: true })
                       .then((response) => {
-                        if (response.status === 200) {
-                          // this.props.history.push({ pathname: '/patients/'.concat(response.patient.uuid) })
-                          console.log(response)
+                        if (response !== undefined && response.status === 200) {
                           this.getPatientByUuid()
                         }
                       })
@@ -168,10 +147,38 @@ class PatientDetails extends Component {
             </Paper>
           </Grid>
           <Grid item xs={12} md={3} lg={3}>
-            <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient} onSubmit={this.createAppointment}/>} />
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                await CustomDialog(<CreateAppointmentToPatientForm preDefinedPatient={this.state.patient}/>, { title: MESSAGES.BUTTONS.NEW_APPOINTMENT, showCloseIcon: true })
+                  .then((response) => {
+                    if (response !== undefined && response.status === 200) {
+                      this.getAppointmentsByPatient()
+                    }
+                  })
+              }}
+            >
+            {MESSAGES.BUTTONS.NEW_APPOINTMENT}
+            </Button>
           </Grid>
           <Grid item xs={12} md={3} lg={3}>
-            <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT_APPOINTMENT} form={<EditAppointmentForm preDefinedPatient={this.state.patient} appointments={this.state.appointments} onSubmit={this.editAppointment}/>} />
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                await CustomDialog(<EditAppointmentForm preDefinedPatient={this.state.patient} appointments={this.state.appointments}/>, { title: MESSAGES.BUTTONS.EDIT_APPOINTMENT, showCloseIcon: true })
+                  .then((response) => {
+                    if (response !== undefined && response.status === 200) {
+                      this.getAppointmentsByPatient()
+                    }
+                  })
+              }}
+            >
+            {MESSAGES.BUTTONS.EDIT_APPOINTMENT}
+            </Button>
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>

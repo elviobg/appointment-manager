@@ -79,7 +79,7 @@ render () {
                 onClick={async () => {
                   await CustomDialog(<CreateAppointmentForm patients={this.state.allPatients}/>, { title: MESSAGES.BUTTONS.NEW_APPOINTMENT, showCloseIcon: true })
                     .then((response) => {
-                      if (response != undefined && response.status === 200) {
+                      if (response !== undefined && response.status === 200) {
                         this.getAppointments()
                       }
                     })

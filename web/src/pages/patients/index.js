@@ -51,7 +51,7 @@ render () {
             onClick={async () => {
               await CustomDialog(<CreatePatientForm/>, { title: MESSAGES.BUTTONS.CREATE_PACIENT, showCloseIcon: true })
                 .then((response) => {
-                  if (response != undefined && response.status === 200) {
+                  if (response !== undefined && response.status === 200) {
                     this.props.history.push({ pathname: '/patients/'.concat(response.patient.uuid) })
                   }
                 })

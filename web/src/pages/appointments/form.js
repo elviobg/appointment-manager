@@ -15,7 +15,8 @@ import api from '../../services/api'
 const state = {
   patientUuid: '',
   appointments: [],
-  dialog: null
+  dialog: null,
+  error: null
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -28,12 +29,23 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  modalbody: {
+    margin: theme.spacing(3)
   }
 }))
 
-const createAppointment = async event => {
+const createAppointmentFromPatient = async event => {
   event.preventDefault(event)
-  const patientUuid = event.target.patient.value
+  createAppointment(event, state.patientUuid)
+}
+
+const createAppointmentFromList = async event => {
+  event.preventDefault(event)
+  createAppointment(event, event.target.patient.value)
+}
+
+const createAppointment = async (event, patientUuid) => {
   const date = event.target.date.value
   let observation = null
   if (typeof event.target.observation !== 'undefined') {
@@ -42,6 +54,23 @@ const createAppointment = async event => {
 
   try {
     await api.post('/appointments', { date, patient_id: patientUuid, observation })
+      .then((response) => {
+        state.dialog.close({ status: 200, appointment: response.data })
+      })
+  } catch (err) {
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+  }
+}
+
+const editAppointment = async event => {
+  event.preventDefault(event)
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
+  }
+
+  try {
+    await api.patch('/appointments/'.concat(event.target.date.value), { observation })
       .then((response) => {
         state.dialog.close({ status: 200, appointment: response.data })
       })
@@ -128,7 +157,7 @@ const AppointmentForm = ({ onSubmit, fieldsContent, buttonLabel }) => {
   state.dialog = useDialog()
 
   return (
-    <div className={classes.root}>
+    <div className={classes.modalbody}>
       <CssBaseline />
       <form onSubmit={onSubmit} className={classes.form} validate>
         { fieldsContent }
@@ -151,7 +180,7 @@ const AppointmentForm = ({ onSubmit, fieldsContent, buttonLabel }) => {
 export const CreateAppointmentForm = ({ patients }) => {
   return (
     <AppointmentForm
-      onSubmit={createAppointment}
+      onSubmit={createAppointmentFromList}
       fieldsContent={
         <div>
           <PatientField patients={patients} defaultPacientUuid={''} />
@@ -164,11 +193,11 @@ export const CreateAppointmentForm = ({ patients }) => {
   )
 }
 
-export const CreateAppointmentToPatientForm = ({ preDefinedPatient, onSubmit }) => {
+export const CreateAppointmentToPatientForm = ({ preDefinedPatient }) => {
   state.patientUuid = preDefinedPatient.uuid
   return (
     <AppointmentForm
-      onSubmit={onSubmit}
+      onSubmit={createAppointmentFromPatient}
       fieldsContent={
         <div>
           <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>
@@ -181,8 +210,9 @@ export const CreateAppointmentToPatientForm = ({ preDefinedPatient, onSubmit }) 
   )
 }
 
-export const EditAppointmentForm = ({ preDefinedPatient, appointments, onSubmit }) => {
+export const MountEditAppointmentForm = ({ preDefinedPatient, appointments }) => {
   const classes = useStyles()
+  state.dialog = useDialog()
   const [observation, setObservation] = useState(appointments[0].observation)
   const [date, setDate] = useState('')
   const handleChangeDate = (event) => {
@@ -197,51 +227,55 @@ export const EditAppointmentForm = ({ preDefinedPatient, appointments, onSubmit 
     setObservation(event.target.value)
   }
 
+  return (
+    <AppointmentForm
+      onSubmit={editAppointment}
+      fieldsContent={
+        <div>
+          <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>
+          <FormControl fullWidth variant="outlined" autoComplete className={classes.formControl}>
+            <InputLabel id='label-selector-date' htmlFor="date">{MESSAGES.LABEL.DATE}</InputLabel>
+            <Select
+              labelId='label-selector-date'
+              native
+              required
+              value={date}
+              onChange={handleChangeDate}
+              inputProps={{
+                name: 'date',
+                id: 'date'
+              }}
+            >
+              {(appointments || []).map((appointment) => {
+                return <option key={appointment.date} value={appointment.uuid}>{appointment.date}</option>
+              })}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="observation"
+              onChange={handleChangeObservation}
+              value={observation}
+              label={MESSAGES.LABEL.OBSERVATION}
+              name="observation"
+              autoFocus
+              multiline
+              rows={4}
+            />
+          </FormControl>
+        </div>
+      }
+      buttonLabel={MESSAGES.BUTTONS.EDIT}
+    />
+  )
+}
+
+export const EditAppointmentForm = ({ preDefinedPatient, appointments }) => {
   if (appointments.length > 0) {
-    return (
-      <AppointmentForm
-        onSubmit={onSubmit}
-        fieldsContent={
-          <div>
-            <h2>{MESSAGES.LABEL.PATIENT}: { preDefinedPatient.name }</h2>
-            <FormControl fullWidth variant="outlined" autoComplete className={classes.formControl}>
-              <InputLabel id='label-selector-date' htmlFor="date">{MESSAGES.LABEL.DATE}</InputLabel>
-              <Select
-                labelId='label-selector-date'
-                native
-                required
-                value={date}
-                onChange={handleChangeDate}
-                inputProps={{
-                  name: 'date',
-                  id: 'date'
-                }}
-              >
-                {(appointments || []).map((appointment) => {
-                  return <option key={appointment.date} value={appointment.uuid}>{appointment.date}</option>
-                })}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth className={classes.formControl}>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="observation"
-                onChange={handleChangeObservation}
-                value={observation}
-                label={MESSAGES.LABEL.OBSERVATION}
-                name="observation"
-                autoFocus
-                multiline
-                rows={4}
-              />
-            </FormControl>
-          </div>
-        }
-        buttonLabel={MESSAGES.BUTTONS.EDIT}
-      />
-    )
+    return (<MountEditAppointmentForm preDefinedPatient={preDefinedPatient} appointments={appointments}/>)
   } else {
     return (
       <div>
