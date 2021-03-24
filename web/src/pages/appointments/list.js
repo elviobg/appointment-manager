@@ -21,19 +21,11 @@ class AppointmentsList extends Component {
     }
   }
 
-  removeAppointment (uuid) {
-    const filtered = this.state.appointments.filter(function (current, index, arr) {
-      return current.uuid !== uuid
-    })
-    this.setState({ appointments: filtered })
-    this.forceUpdate()
-  }
-
   async deleteAppointment (uuid) {
     try {
       await api.delete('/appointments/'.concat(uuid))
         .then((response) => {
-          this.removeAppointment(uuid)
+          this.props.removeAppointment(uuid)
         })
     } catch (err) {
       this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })

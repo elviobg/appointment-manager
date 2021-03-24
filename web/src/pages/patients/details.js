@@ -18,6 +18,16 @@ import { CreateAppointmentToPatientForm, EditAppointmentForm } from './../appoin
 import MESSAGES from '../../services/messages'
 
 class PatientDetails extends Component {
+  constructor (props) {
+    super(props)
+
+    this.removeAppointment = this.removeAppointment.bind(this)
+  }
+
+  removeAppointment (uuid) {
+    this.setState({ appointments: this.state.appointments.filter(appointment => appointment.uuid !== uuid) })
+  }
+
   state = {
     isLoadingPatient: true,
     isLoadingAppointments: true,
@@ -173,7 +183,7 @@ class PatientDetails extends Component {
               <Grid item xs={12}>
                 <h2>{MESSAGES.LABEL.APPOINTMENTS}</h2>
               </Grid>
-              <AppointmentsList appointments={this.state.appointments} hidePatientColumn={true}/>
+              <AppointmentsList removeAppointment={this.removeAppointment} appointments={this.state.appointments} hidePatientColumn={true}/>
             </Paper>
           </Grid>
         </Grid>

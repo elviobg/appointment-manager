@@ -12,6 +12,16 @@ import MESSAGES from '../../services/messages'
 import AppointmentsList from './list'
 
 class Appointments extends Component {
+  constructor (props) {
+    super(props)
+
+    this.removeAppointment = this.removeAppointment.bind(this)
+  }
+
+  removeAppointment (uuid) {
+    this.setState({ allAppointments: this.state.allAppointments.filter(appointment => appointment.uuid !== uuid) })
+  }
+
 state = {
   isLoadingPacients: true,
   isLoadingAppointments: true,
@@ -31,11 +41,9 @@ async getAppointments () {
   try {
     await api.get('/appointments')
       .then((response) => {
-        console.log(response.data)
         response.data.id = response.data.uuid
         this.setState({ allAppointments: response.data })
         this.setState({ isLoadingAppointments: false })
-        console.log(this.state.allAppointments)
       })
   } catch (err) {
     this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
@@ -84,7 +92,7 @@ render () {
           <Grid item xs={3}>
               <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentForm onSubmit={this.createAppointment} patients={this.state.allPatients}/>} />
           </Grid>
-          <AppointmentsList appointments={this.state.allAppointments} hidePatientColumn={false} />
+          <AppointmentsList removeAppointment={this.removeAppointment} appointments={this.state.allAppointments} hidePatientColumn={false} />
         </Grid>
       }
       />
