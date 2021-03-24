@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import InputMask from 'react-input-mask'
 import moment from 'moment'
+import { useDialog } from 'react-st-modal'
 
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -11,10 +12,12 @@ import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 
 import MESSAGES from './../../services/messages'
+import api from './../../services/api'
 
 const state = {
   error: '',
-  uuid: ''
+  uuid: '',
+  dialog: null
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -34,8 +37,32 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  modalbody: {
+    margin: theme.spacing(2)
+  },
+  modalarea: {
+    margin: theme.spacing(2)
   }
 }))
+
+const CreateNewPatient = async event => {
+  event.preventDefault(event)
+  const name = event.target.name.value
+  const phone = event.target.phone.value
+  const birthday = event.target.birthday.value
+  const gender = event.target.gender.value
+  const height = event.target.height.value
+  const weight = event.target.weight.value
+  try {
+    await api.post('/patients', { name, phone, birthday, gender, height, weight })
+      .then((response) => {
+        state.dialog.close({ status: 200, patient: response.data })
+      })
+  } catch (error) {
+    state.error = MESSAGES.ERROR.DB_CONNECTION
+  }
+}
 
 export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   const classes = useStyles()
@@ -56,11 +83,12 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
     handleWeight(event.target.value)
   }
   console.log(defaultPacientValues)
+  state.dialog = useDialog()
 
   return (
-    <div className={classes.root}>
+    <div className={classes.modalbody}>
       <CssBaseline />
-      <form onSubmit={onSubmit} className={classes.form} validate>
+      <form onSubmit={CreateNewPatient} className={classes.form} validate>
         <TextField
           variant="outlined"
           margin="normal"
@@ -190,7 +218,7 @@ export const CreatePatientForm = ({ onSubmit }) => {
     weight: ''
   }
   return (
-    <PatientForm onSubmit={onSubmit} defaultPacientValues={defaultPacientValues}/>
+      <PatientForm onSubmit={onSubmit} defaultPacientValues={defaultPacientValues}/>
   )
 }
 
