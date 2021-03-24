@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { CustomDialog } from 'react-st-modal'
 
 import Grid from '@material-ui/core/Grid'
+import { Button } from '@material-ui/core'
 
-import { FormContainer } from './../../components/FormContainer'
 import { CreateAppointmentForm } from './form'
 import Dashboard from './../../components/Dashboard'
 import api from '../../services/api'
@@ -50,25 +51,6 @@ async getAppointments () {
   }
 }
 
-createAppointment = async event => {
-  event.preventDefault(event)
-  const patientUuid = event.target.patient.value
-  const date = event.target.date.value
-  let observation = null
-  if (typeof event.target.observation !== 'undefined') {
-    observation = event.target.observation.value
-  }
-
-  try {
-    await api.post('/appointments', { date, patient_id: patientUuid, observation })
-      .then((response) => {
-        this.getAppointments()
-      })
-  } catch (err) {
-    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
-  }
-}
-
 async getPacients () {
   try {
     await api.get('/patients')
@@ -90,7 +72,21 @@ render () {
       <Dashboard contentBoard={
         <Grid container spacing={1}>
           <Grid item xs={3}>
-              <FormContainer triggerButtonText={MESSAGES.BUTTONS.NEW_APPOINTMENT} form={<CreateAppointmentForm onSubmit={this.createAppointment} patients={this.state.allPatients}/>} />
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  await CustomDialog(<CreateAppointmentForm patients={this.state.allPatients}/>, { title: MESSAGES.BUTTONS.NEW_APPOINTMENT, showCloseIcon: true })
+                    .then((response) => {
+                      if (response != undefined && response.status === 200) {
+                        this.getAppointments()
+                      }
+                    })
+                }}
+              >
+              {MESSAGES.BUTTONS.NEW_APPOINTMENT}
+              </Button>
           </Grid>
           <AppointmentsList removeAppointment={this.removeAppointment} appointments={this.state.allAppointments} hidePatientColumn={false} />
         </Grid>

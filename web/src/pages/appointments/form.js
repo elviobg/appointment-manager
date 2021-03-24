@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDialog } from 'react-st-modal'
 
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -9,10 +10,12 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
 import MESSAGES from '../../services/messages'
+import api from '../../services/api'
 
 const state = {
   patientUuid: '',
-  appointments: []
+  appointments: [],
+  dialog: null
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +30,25 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2)
   }
 }))
+
+const createAppointment = async event => {
+  event.preventDefault(event)
+  const patientUuid = event.target.patient.value
+  const date = event.target.date.value
+  let observation = null
+  if (typeof event.target.observation !== 'undefined') {
+    observation = event.target.observation.value
+  }
+
+  try {
+    await api.post('/appointments', { date, patient_id: patientUuid, observation })
+      .then((response) => {
+        state.dialog.close({ status: 200, appointment: response.data })
+      })
+  } catch (err) {
+    this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
+  }
+}
 
 const PatientField = ({ patients, defaultPacientUuid }) => {
   const classes = useStyles()
@@ -103,6 +125,7 @@ const ObservationField = ({ defaultObservationValue }) => {
 
 const AppointmentForm = ({ onSubmit, fieldsContent, buttonLabel }) => {
   const classes = useStyles()
+  state.dialog = useDialog()
 
   return (
     <div className={classes.root}>
@@ -125,10 +148,10 @@ const AppointmentForm = ({ onSubmit, fieldsContent, buttonLabel }) => {
   )
 }
 
-export const CreateAppointmentForm = ({ patients, onSubmit }) => {
+export const CreateAppointmentForm = ({ patients }) => {
   return (
     <AppointmentForm
-      onSubmit={onSubmit}
+      onSubmit={createAppointment}
       fieldsContent={
         <div>
           <PatientField patients={patients} defaultPacientUuid={''} />

@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import { CustomDialog } from 'react-st-modal'
 
 import Grid from '@material-ui/core/Grid'
+import { Button } from '@material-ui/core'
 
 import { CreatePatientForm } from './form'
 import Dashboard from '../../components/Dashboard'
 import api from '../../services/api'
 import PatientsList from './list'
 import MESSAGES from '../../services/messages'
-import { Button } from '@material-ui/core'
 
 class Patients extends Component {
 state = {
@@ -51,7 +51,7 @@ render () {
             onClick={async () => {
               await CustomDialog(<CreatePatientForm/>, { title: MESSAGES.BUTTONS.CREATE_PACIENT, showCloseIcon: true })
                 .then((response) => {
-                  if (response.status === 200) {
+                  if (response != undefined && response.status === 200) {
                     this.props.history.push({ pathname: '/patients/'.concat(response.patient.uuid) })
                   }
                 })
