@@ -16,7 +16,7 @@ import api from './../../services/api'
 
 const state = {
   error: '',
-  uuid: '',
+  patientUuid: '',
   dialog: null
 }
 
@@ -64,6 +64,24 @@ const CreateNewPatient = async event => {
   }
 }
 
+const updatePatient = async event => {
+  event.preventDefault(event)
+  const name = event.target.name.value
+  const phone = event.target.phone.value
+  const birthday = event.target.birthday.value
+  const gender = event.target.gender.value
+  const height = event.target.height.value
+  const weight = event.target.weight.value
+  try {
+    await api.put('/patients/'.concat(state.patientUuid), { name, phone, birthday, gender, height, weight })
+      .then((response) => {
+        state.dialog.close({ status: 200, patient: response.data })
+      })
+  } catch (err) {
+    state({ error: MESSAGES.ERROR.DB_CONNECTION })
+  }
+}
+
 export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   const classes = useStyles()
   const [gender, setGender] = useState(defaultPacientValues.gender)
@@ -88,7 +106,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   return (
     <div className={classes.modalbody}>
       <CssBaseline />
-      <form onSubmit={CreateNewPatient} className={classes.form} validate>
+      <form onSubmit={onSubmit} className={classes.form} validate>
         <TextField
           variant="outlined"
           margin="normal"
@@ -208,7 +226,7 @@ export const PatientForm = ({ onSubmit, defaultPacientValues }) => {
   )
 }
 
-export const CreatePatientForm = ({ onSubmit }) => {
+export const CreatePatientForm = () => {
   const defaultPacientValues = {
     name: '',
     phone: '',
@@ -218,13 +236,13 @@ export const CreatePatientForm = ({ onSubmit }) => {
     weight: ''
   }
   return (
-      <PatientForm onSubmit={onSubmit} defaultPacientValues={defaultPacientValues}/>
+      <PatientForm onSubmit={CreateNewPatient} defaultPacientValues={defaultPacientValues}/>
   )
 }
 
 export const EditPatientForm = ({ patient, onSubmit }) => {
-  state.uuid = patient.uuid
+  state.patientUuid = patient.uuid
   return (
-    <PatientForm onSubmit={onSubmit} defaultPacientValues={patient}/>
+    <PatientForm onSubmit={updatePatient} defaultPacientValues={patient}/>
   )
 }

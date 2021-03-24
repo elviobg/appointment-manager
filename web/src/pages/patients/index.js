@@ -49,7 +49,7 @@ render () {
             variant="contained"
             color="primary"
             onClick={async () => {
-              await CustomDialog(<CreatePatientForm onSubmit={this.getPatients}/>, { title: MESSAGES.BUTTONS.CREATE_PACIENT, showCloseIcon: true })
+              await CustomDialog(<CreatePatientForm/>, { title: MESSAGES.BUTTONS.CREATE_PACIENT, showCloseIcon: true })
                 .then((response) => {
                   if (response.status === 200) {
                     this.props.history.push({ pathname: '/patients/'.concat(response.patient.uuid) })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Confirm } from 'react-st-modal'
+import { Confirm, CustomDialog } from 'react-st-modal'
 
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -102,9 +102,6 @@ class PatientDetails extends Component {
       observation = event.target.observation.value
     }
 
-    console.log('edit...')
-    console.log(event.target.date.value)
-    console.log(observation)
     try {
       await api.patch('/appointments/'.concat(event.target.date.value), { observation })
         .then((response) => {
@@ -112,24 +109,6 @@ class PatientDetails extends Component {
         })
     } catch (err) {
       this.setState({ error: MESSAGES.ERROR.DB_CONNECTION })
-    }
-  }
-
-  updatePatient = async event => {
-    event.preventDefault(event)
-    const name = event.target.name.value
-    const phone = event.target.phone.value
-    const birthday = event.target.birthday.value
-    const gender = event.target.gender.value
-    const height = event.target.height.value
-    const weight = event.target.weight.value
-    try {
-      await api.put('/patients/'.concat(this.state.patient.uuid), { name, phone, birthday, gender, height, weight })
-        .then((response) => {
-          this.getPatientByUuid()
-        })
-    } catch (err) {
-      this.state({ error: MESSAGES.ERROR.DB_CONNECTION })
     }
   }
 
@@ -154,7 +133,23 @@ class PatientDetails extends Component {
           </Grid>
           <Grid item xs={12} md={4} lg={3}>
             <Paper className={classes.paper}>
-                <FormContainer triggerButtonText={MESSAGES.BUTTONS.EDIT} form={<EditPatientForm onSubmit={this.updatePatient} patient={this.state.patient} />} />
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={async () => {
+                    await CustomDialog(<EditPatientForm patient={this.state.patient}/>, { title: MESSAGES.BUTTONS.EDIT, showCloseIcon: true })
+                      .then((response) => {
+                        if (response.status === 200) {
+                          // this.props.history.push({ pathname: '/patients/'.concat(response.patient.uuid) })
+                          console.log(response)
+                          this.getPatientByUuid()
+                        }
+                      })
+                  }}
+                >
+                {MESSAGES.BUTTONS.EDIT}
+                </Button>
                 <Button
                   spacing={3}
                   fullWidth
